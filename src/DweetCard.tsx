@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from "react";
+import React, { useEffect, useState, useRef, useContext } from "react";
 import { Dweet, setLike, addComment } from "./api";
 import { UserView } from "./UserView";
 import AceEditor from "react-ace";
@@ -6,6 +6,8 @@ import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
 import { Modal } from "reactstrap";
 import Linkify from "react-linkify";
+import { Context } from "./Context";
+import { Link } from "react-router-dom";
 
 interface Props {
   dweet: Dweet;
@@ -21,6 +23,8 @@ export const DweetCard: React.FC<Props> = (props) => {
   const [updatedDweet, setUpdatedDweet] = useState<Dweet | null>(null);
   const [replyText, setReplyText] = useState("");
   const [shouldShowIframe, setShouldShowIframe] = useState(false);
+
+  const [context, _] = useContext(Context);
 
   useEffect(() => {
     if (!iframeContainer) {
@@ -142,7 +146,18 @@ export const DweetCard: React.FC<Props> = (props) => {
                 onClick={async (e) => {
                   //@ts-ignore
                   e.target.blur();
+                  e.preventDefault();
                   setIsAwesomeLoading(true);
+                  try {
+                    await context.requireLogin({
+                      reason:
+                        "You need to log in in order to Awesome this dweet!",
+                      nextAction: 'click "Awesome!"',
+                    });
+                  } catch {
+                    setIsAwesomeLoading(false);
+                    return;
+                  }
                   try {
                     const newDweet = await setLike(
                       dweet.id,
@@ -256,7 +271,15 @@ export const DweetCard: React.FC<Props> = (props) => {
         <div key={comment.id} style={{ marginTop: 16 }}>
           <UserView user={comment.author} />
           <div style={{ marginLeft: 32 + 16 }}>
-            <Linkify>{comment.text}</Linkify>
+            <Linkify
+              componentDecorator={(href, text, key) => (
+                <Link key={key} to={href}>
+                  {text}
+                </Link>
+              )}
+            >
+              {comment.text}
+            </Linkify>
           </div>
         </div>
       ))}
@@ -264,9 +287,23 @@ export const DweetCard: React.FC<Props> = (props) => {
         style={{ marginTop: 32 }}
         onSubmit={async (e) => {
           e.preventDefault();
-          setUpdatedDweet(await addComment(dweet.id, replyText));
-          setReplyText("");
-          inputRef.current?.blur();
+          try {
+            await context.requireLogin({
+              reason:
+                "You need to log in in order to post this comment! Log in now, and this comment will be posted: " +
+                replyText,
+              nextAction: "post comment",
+            });
+          } catch {
+            return;
+          }
+          try {
+            setUpdatedDweet(await addComment(dweet.id, replyText));
+            setReplyText("");
+            inputRef.current?.blur();
+          } catch (e) {
+            alert(JSON.stringify(e));
+          }
         }}
       >
         <div
