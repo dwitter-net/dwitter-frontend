@@ -7,6 +7,7 @@ import "ace-builds/src-noconflict/theme-monokai";
 import { Modal } from "reactstrap";
 import Linkify from "react-linkify";
 import { Context } from "./Context";
+import { Link } from "react-router-dom";
 
 interface Props {
   dweet: Dweet;
@@ -270,7 +271,15 @@ export const DweetCard: React.FC<Props> = (props) => {
         <div key={comment.id} style={{ marginTop: 16 }}>
           <UserView user={comment.author} />
           <div style={{ marginLeft: 32 + 16 }}>
-            <Linkify>{comment.text}</Linkify>
+            <Linkify
+              componentDecorator={(href, text, key) => (
+                <Link key={key} to={href}>
+                  {text}
+                </Link>
+              )}
+            >
+              {comment.text}
+            </Linkify>
           </div>
         </div>
       ))}

@@ -61,23 +61,23 @@ for (const item of [
   {
     prefix: "d/",
     regex: /[a-zA-Z0-9_]+/,
-    normalize: (match: any) => (match.url = "https://dwitter.net/" + match.url),
+    normalize: (match: any) => (match.url = "/" + match.url),
   },
   {
     prefix: "u/",
     regex: /[a-zA-Z0-9_]+/,
-    normalize: (match: any) => (match.url = "https://dwitter.net/" + match.url),
+    normalize: (match: any) => (match.url = "/" + match.url),
   },
   {
     prefix: "c/",
     regex: /[a-zA-Z0-9_]+/,
-    normalize: (match: any) => (match.url = "https://dwitter.net/" + match.url),
+    normalize: (match: any) => (match.url = "/" + match.url),
   },
   {
     prefix: "#",
     regex: /[a-zA-Z_][a-zA-Z0-9_-]+/,
     normalize: (match: any) =>
-      (match.url = "https://dwitter.net/h/" + match.url.slice(1)),
+      (match.url = "/h/" + match.url.slice(1) + "/top"),
   },
 ]) {
   linkify.add(item.prefix, {
