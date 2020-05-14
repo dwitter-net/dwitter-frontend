@@ -52,11 +52,8 @@ for (const item of [
 ]) {
   linkify.add(item.prefix, {
     validate: (text: string, pos: number, self: any) => {
-      console.log("validato", item.prefix, text, pos);
       const tail = text.slice(pos);
-      console.log("tail", tail);
       if (item.regex.test(tail)) {
-        console.log("matcho");
         const match = tail.match(item.regex);
         if (match) {
           return match[0].length;
