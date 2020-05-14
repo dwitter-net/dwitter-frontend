@@ -47,14 +47,14 @@ export const Feed: React.FC<
               </div>
               <div style={{ marginLeft: 16, display: "flex" }}>
                 <NavLink
-                  to={`/h/${hashtag}/top`}
+                  to={`/h/${hashtag}/hot`}
                   exact={true}
                   style={{
                     width: 48,
                   }}
                   activeStyle={{ fontWeight: "bold" }}
                 >
-                  top
+                  hot
                 </NavLink>
                 <NavLink
                   to={`/h/${hashtag}/new`}
@@ -65,6 +65,16 @@ export const Feed: React.FC<
                   activeStyle={{ fontWeight: "bold" }}
                 >
                   new
+                </NavLink>
+                <NavLink
+                  to={`/h/${hashtag}/top`}
+                  exact={true}
+                  style={{
+                    width: 48,
+                  }}
+                  activeStyle={{ fontWeight: "bold" }}
+                >
+                  top
                 </NavLink>
               </div>
             </div>
