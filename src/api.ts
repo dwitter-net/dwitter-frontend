@@ -39,22 +39,33 @@ async function get(path: string) {
       ...(token ? { Authorization: "token " + token } : {}),
     },
   });
-  return response.json();
+  if (token && response.status === 401) {
+    localStorage.removeItem("token");
+  }
+  if (!response.ok) {
+    throw await response.json();
+  }
+  return await response.json();
 }
 
 async function post(path: string, options: { data?: any }) {
   const token = localStorage.getItem("token");
-  return (
-    await fetch(process.env.REACT_APP_API_BASE_URL + path, {
-      method: "post",
-      body: JSON.stringify(options.data),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-        ...(token ? { Authorization: "token " + token } : {}),
-      },
-    })
-  ).json();
+  const response = await fetch(process.env.REACT_APP_API_BASE_URL + path, {
+    method: "post",
+    body: JSON.stringify(options.data),
+    headers: {
+      "Content-Type": "application/json",
+      Accept: "application/json",
+      ...(token ? { Authorization: "token " + token } : {}),
+    },
+  });
+  if (token && response.status === 401) {
+    localStorage.removeItem("token");
+  }
+  if (!response.ok) {
+    throw await response.json();
+  }
+  return await response.json();
 }
 
 export async function getDweets(
