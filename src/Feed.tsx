@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { DweetCard } from "./DweetCard";
 import { Dweet, getDweets } from "./api";
 import { Link, RouteComponentProps, NavLink } from "react-router-dom";
@@ -11,18 +11,49 @@ interface Props {
 export const Feed: React.FC<
   Props & RouteComponentProps<{ hashtag?: string }>
 > = (props) => {
-  const [dweets, setDweets] = useState<Dweet[] | null>(null);
+  const [dweets, setDweets] = useState<Dweet[][]>([]);
+  const pageState = useRef({ current: 0, target: 0 });
+  const [page, setPage] = useState(0);
 
   const hashtag = props.match.params.hashtag || "";
+  const infiniteScrollSensorDivRef = useRef<HTMLDivElement>(null);
+  const infiniteScrollSensorDiv = infiniteScrollSensorDivRef.current;
 
   useEffect(() => {
-    getDweets(props.order_by, hashtag).then((data) => {
-      setDweets(data.results);
+    if (!infiniteScrollSensorDiv) {
+      return;
+    }
+    const observer = new IntersectionObserver((entries) => {
+      for (const entry of entries) {
+        if (entry.intersectionRatio > 0) {
+          if (pageState.current.target === pageState.current.current) {
+            pageState.current.target += 1;
+            setPage(pageState.current.target);
+          }
+        }
+      }
     });
-  }, [hashtag, props.order_by]);
+    observer.observe(infiniteScrollSensorDiv);
+  }, [infiniteScrollSensorDiv]);
+
+  useEffect(() => {
+    getDweets(props.order_by, hashtag, page).then((data) => {
+      pageState.current.current = page;
+      setDweets((dweets) => {
+        dweets[page] = data.results;
+        return dweets.slice();
+      });
+    });
+  }, [hashtag, page, props.order_by]);
 
   return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
+    <div
+      style={{
+        display: "flex",
+        justifyContent: "center",
+        position: "relative",
+      }}
+    >
       <div
         style={{
           maxWidth: 600,
@@ -120,8 +151,21 @@ export const Feed: React.FC<
           </div>
         )}
         {dweets &&
-          dweets.map((dweet) => <DweetCard key={dweet.id} dweet={dweet} />)}
+          dweets
+            .flat()
+            .map((dweet) => <DweetCard key={dweet.id} dweet={dweet} />)}
       </div>
+      <div
+        ref={infiniteScrollSensorDivRef}
+        style={{
+          position: "absolute",
+          bottom: 0,
+          left: 0,
+          right: 0,
+          height: "100vh",
+          pointerEvents: "none",
+        }}
+      />
     </div>
   );
 };
