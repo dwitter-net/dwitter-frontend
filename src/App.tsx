@@ -22,10 +22,40 @@ import {
   DropdownToggle,
   DropdownItem,
   DropdownMenu,
+  Modal,
 } from "reactstrap";
 import { Create } from "./Create";
 import { SingleDweet } from "./SingleDweet";
 import { Settings } from "./Settings";
+import { LoginForm } from "./LoginForm";
+
+const NewFeed = (props: RouteComponentProps) => (
+  <Feed feedName="new" order_by="-posted" {...props} />
+);
+
+const RandomFeed = (props: RouteComponentProps) => (
+  <Feed feedName="random" order_by="?" {...props} />
+);
+
+const TopFeed = (props: RouteComponentProps) => (
+  <Feed feedName="top" order_by="-likes" {...props} />
+);
+
+const HotFeed = (props: RouteComponentProps) => (
+  <Feed feedName="hot" order_by="-hotness" {...props} />
+);
+
+const NewHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
+  <Feed feedName="new" order_by="-posted" {...props} />
+);
+
+const TopHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
+  <Feed feedName="top" order_by="-likes" {...props} />
+);
+
+const HotHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
+  <Feed feedName="hot" order_by="-hotness" {...props} />
+);
 
 for (const item of [
   {
@@ -65,9 +95,44 @@ for (const item of [
   });
 }
 
+interface LoginRequest {
+  reason: string;
+  nextAction: string;
+  promise: Promise<any>;
+  resolve: () => void;
+  reject: () => void;
+}
+
 function App() {
+  const [
+    currentLoginRequest,
+    setCurrentLoginRequest,
+  ] = useState<LoginRequest | null>(null);
   const [context, setContext] = useState<AppContext>({
     user: JSON.parse(localStorage.getItem("user") || "null"),
+    requireLogin: async (options: { reason: string; nextAction: string }) => {
+      if (localStorage.getItem("user")) {
+        return;
+      }
+      if (currentLoginRequest) {
+        return await currentLoginRequest.promise;
+      }
+      const loginPromise: Partial<LoginRequest> = { ...options };
+      loginPromise.promise = new Promise((resolve, reject) => {
+        loginPromise.resolve = resolve;
+        loginPromise.reject = reject;
+      });
+      setCurrentLoginRequest(loginPromise as LoginRequest);
+      try {
+        await loginPromise.promise;
+      } catch {
+        setCurrentLoginRequest(null);
+        throw new Error();
+      }
+      if (currentLoginRequest === loginPromise) {
+        setCurrentLoginRequest(null);
+      }
+    },
   });
 
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
@@ -196,58 +261,69 @@ function App() {
               />
             )}
             <Route path="/d/:id" exact={true} component={SingleDweet} />
-            <Route
-              path="/new"
-              key="new"
-              exact={true}
-              component={(props: RouteComponentProps) => (
-                <Feed feedName="new" order_by="-posted" {...props} />
-              )}
-            />
-            <Route
-              path="/top"
-              key="top"
-              exact={true}
-              component={(props: RouteComponentProps) => (
-                <Feed feedName="top" order_by="-likes" {...props} />
-              )}
-            />
+            <Route path="/new" key="new" exact={true} component={NewFeed} />
+            <Route path="/top" key="top" exact={true} component={TopFeed} />
             <Route
               path="/random"
               key="random"
               exact={true}
-              component={(props: RouteComponentProps) => (
-                <Feed feedName="random" order_by="?" {...props} />
-              )}
+              component={RandomFeed}
             />
             <Route
               path="/h/:hashtag/top"
               key="hashtag"
               exact={true}
-              component={(props: RouteComponentProps<{ hashtag: string }>) => (
-                <Feed feedName="top" order_by="-likes" {...props} />
-              )}
+              component={TopHashtagFeed}
+            />
+            <Route
+              path="/h/:hashtag/hot"
+              key="hashtag"
+              exact={true}
+              component={HotHashtagFeed}
             />
             <Route
               path="/h/:hashtag/new"
               key="hashtag"
               exact={true}
-              component={(props: RouteComponentProps<{ hashtag: string }>) => (
-                <Feed feedName="new" order_by="-posted" {...props} />
-              )}
+              component={NewHashtagFeed}
             />
             <Route path="/about" exact={true} component={About} />
 
-            <Route
-              path=""
-              key="hot"
-              exact={true}
-              component={(props: RouteComponentProps) => (
-                <Feed feedName="hot" order_by="-hotness" {...props} />
-              )}
-            />
+            <Route path="" key="hot" exact={true} component={HotFeed} />
           </Switch>
         </div>
+        <Modal
+          isOpen={!!currentLoginRequest}
+          keyboard={true}
+          toggle={() => currentLoginRequest && currentLoginRequest.reject()}
+        >
+          <div className="p-3">
+            <div className="d-flex justify-content-center align-items-center flex-column">
+              <div className="d-flex justify-content-center align-items-stretch flex-column">
+                <div
+                  className="alert alert-info"
+                  style={{
+                    marginTop: 16,
+                    marginBottom: 32,
+                    maxWidth: 16 * 18,
+                  }}
+                >
+                  {currentLoginRequest && currentLoginRequest.reason}
+                </div>
+
+                {currentLoginRequest && (
+                  <LoginForm
+                    nextAction={currentLoginRequest.nextAction}
+                    onLogin={() => {
+                      currentLoginRequest.resolve();
+                      setCurrentLoginRequest(null);
+                    }}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </Modal>
       </Router>
     </Context.Provider>
   );
