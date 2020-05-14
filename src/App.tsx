@@ -30,31 +30,43 @@ import { Settings } from "./Settings";
 import { LoginForm } from "./LoginForm";
 
 const NewFeed = (props: RouteComponentProps) => (
-  <Feed feedName="new" order_by="-posted" {...props} />
+  <Feed order_by="-posted" {...props} />
 );
 
 const RandomFeed = (props: RouteComponentProps) => (
-  <Feed feedName="random" order_by="?" {...props} />
+  <Feed order_by="?" {...props} />
 );
 
 const TopFeed = (props: RouteComponentProps) => (
-  <Feed feedName="top" order_by="-likes" {...props} />
+  <Feed order_by="-likes" {...props} />
 );
 
 const HotFeed = (props: RouteComponentProps) => (
-  <Feed feedName="hot" order_by="-hotness" {...props} />
+  <Feed order_by="-hotness" {...props} />
 );
 
 const NewHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
-  <Feed feedName="new" order_by="-posted" {...props} />
+  <Feed order_by="-posted" {...props} />
 );
 
 const TopHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
-  <Feed feedName="top" order_by="-likes" {...props} />
+  <Feed order_by="-likes" {...props} />
 );
 
 const HotHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
-  <Feed feedName="hot" order_by="-hotness" {...props} />
+  <Feed order_by="-hotness" {...props} />
+);
+
+const HotUserFeed = (props: RouteComponentProps<{ username: string }>) => (
+  <Feed order_by="-hotness" {...props} />
+);
+
+const TopUserFeed = (props: RouteComponentProps<{ username: string }>) => (
+  <Feed order_by="-likes" {...props} />
+);
+
+const NewUserFeed = (props: RouteComponentProps<{ username: string }>) => (
+  <Feed order_by="-posted" {...props} />
 );
 
 for (const item of [
@@ -209,10 +221,10 @@ function App() {
                   </DropdownToggle>
                   <DropdownMenu>
                     <DropdownItem>
-                      <Link to={"/d/" + context.user.username}>My profile</Link>
+                      <Link to={"/u/" + context.user.username}>My profile</Link>
                     </DropdownItem>
                     <DropdownItem>
-                      <Link to={"/d/" + context.user.username + "/awesome"}>
+                      <Link to={"/u/" + context.user.username + "/awesome"}>
                         My awesomed dweets
                       </Link>
                     </DropdownItem>
@@ -247,12 +259,7 @@ function App() {
               exact={true}
               component={Login}
             ></Route>
-            <Route
-              path="/create"
-              key="new"
-              exact={true}
-              component={Create}
-            ></Route>
+            <Route path="/create" exact={true} component={Create}></Route>
             {context.user && (
               <Route
                 path={"/" + context.user.username + "/settings"}
@@ -261,35 +268,42 @@ function App() {
               />
             )}
             <Route path="/d/:id" exact={true} component={SingleDweet} />
-            <Route path="/new" key="new" exact={true} component={NewFeed} />
-            <Route path="/top" key="top" exact={true} component={TopFeed} />
-            <Route
-              path="/random"
-              key="random"
-              exact={true}
-              component={RandomFeed}
-            />
+            <Route path="/new" exact={true} component={NewFeed} />
+            <Route path="/top" exact={true} component={TopFeed} />
+            <Route path="/random" exact={true} component={RandomFeed} />
             <Route
               path="/h/:hashtag/top"
-              key="hashtag"
               exact={true}
               component={TopHashtagFeed}
             />
             <Route
               path="/h/:hashtag/hot"
-              key="hashtag"
               exact={true}
               component={HotHashtagFeed}
             />
             <Route
               path="/h/:hashtag/new"
-              key="hashtag"
               exact={true}
               component={NewHashtagFeed}
             />
+            <Route
+              path="/u/:username/top"
+              exact={true}
+              component={TopUserFeed}
+            />
+            <Route
+              path="/u/:username/hot"
+              exact={true}
+              component={HotUserFeed}
+            />
+            <Route
+              path="/u/:username/new"
+              exact={true}
+              component={NewUserFeed}
+            />
             <Route path="/about" exact={true} component={About} />
 
-            <Route path="" key="hot" exact={true} component={HotFeed} />
+            <Route path="" exact={true} component={HotFeed} />
           </Switch>
         </div>
         <Modal

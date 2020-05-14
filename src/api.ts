@@ -71,12 +71,15 @@ async function post(path: string, options: { data?: any }) {
 export async function getDweets(
   order_by: string,
   hashtag: string,
+  username: string,
   page: number
 ): Promise<ApiList<Dweet>> {
   return get(
-    `dweets/?offset=${page * 10}&order_by=${encodeURIComponent(
-      order_by
-    )}&hashtag=${encodeURIComponent(hashtag)}`
+    `dweets/?offset=${page * 10}&username=${encodeURIComponent(
+      username
+    )}order_by=${encodeURIComponent(order_by)}&hashtag=${encodeURIComponent(
+      hashtag
+    )}`
   );
 }
 

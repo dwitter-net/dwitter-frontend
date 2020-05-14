@@ -4,18 +4,18 @@ import { Dweet, getDweets } from "./api";
 import { Link, RouteComponentProps, NavLink } from "react-router-dom";
 
 interface Props {
-  feedName: string;
   order_by: string;
 }
 
 export const Feed: React.FC<
-  Props & RouteComponentProps<{ hashtag?: string }>
+  Props & RouteComponentProps<{ hashtag?: string; username?: string }>
 > = (props) => {
   const [dweets, setDweets] = useState<Dweet[][]>([]);
   const pageState = useRef({ current: 0, target: 0 });
   const [page, setPage] = useState(0);
 
   const hashtag = props.match.params.hashtag || "";
+  const username = props.match.params.username || "";
   const infiniteScrollSensorDivRef = useRef<HTMLDivElement>(null);
   const infiniteScrollSensorDiv = infiniteScrollSensorDivRef.current;
 
@@ -37,14 +37,14 @@ export const Feed: React.FC<
   }, [infiniteScrollSensorDiv]);
 
   useEffect(() => {
-    getDweets(props.order_by, hashtag, page).then((data) => {
+    getDweets(props.order_by, hashtag, username, page).then((data) => {
       pageState.current.current = page;
       setDweets((dweets) => {
         dweets[page] = data.results;
         return dweets.slice();
       });
     });
-  }, [hashtag, page, props.order_by]);
+  }, [hashtag, page, props.order_by, username]);
 
   return (
     <div
