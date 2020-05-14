@@ -160,7 +160,16 @@ function App() {
                       </Link>
                     </DropdownItem>
                     <DropdownItem divider />
-                    <DropdownItem>Log out</DropdownItem>
+                    <DropdownItem
+                      onClick={(e) => {
+                        e.preventDefault();
+                        localStorage.removeItem("token");
+                        localStorage.removeItem("user");
+                        window.location.href = "/";
+                      }}
+                    >
+                      Log out
+                    </DropdownItem>
                   </DropdownMenu>
                 </Dropdown>
               ) : (
