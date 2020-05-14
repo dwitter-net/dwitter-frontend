@@ -10,6 +10,7 @@ import {
   Route,
   NavLink,
   Link,
+  RouteComponentProps,
 } from "react-router-dom";
 import { Feed } from "./Feed";
 import { Login } from "./Login";
@@ -189,19 +190,56 @@ function App() {
               />
             )}
             <Route path="/d/:id" exact={true} component={SingleDweet} />
-            <Route path="/new" key="new" exact={true}>
-              <Feed key="new" feedName="new" order_by="-posted" />
-            </Route>
-            <Route path="/top" key="top" exact={true}>
-              <Feed key="top" feedName="top" order_by="-likes" />
-            </Route>
-            <Route path="/random" key="random" exact={true}>
-              <Feed key="random" feedName="random" order_by="?" />
-            </Route>
+            <Route
+              path="/new"
+              key="new"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <Feed feedName="new" order_by="-posted" {...props} />
+              )}
+            />
+            <Route
+              path="/top"
+              key="top"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <Feed feedName="top" order_by="-likes" {...props} />
+              )}
+            />
+            <Route
+              path="/random"
+              key="random"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <Feed feedName="random" order_by="?" {...props} />
+              )}
+            />
+            <Route
+              path="/h/:hashtag/top"
+              key="hashtag"
+              exact={true}
+              component={(props: RouteComponentProps<{ hashtag: string }>) => (
+                <Feed feedName="top" order_by="-likes" {...props} />
+              )}
+            />
+            <Route
+              path="/h/:hashtag/new"
+              key="hashtag"
+              exact={true}
+              component={(props: RouteComponentProps<{ hashtag: string }>) => (
+                <Feed feedName="new" order_by="-posted" {...props} />
+              )}
+            />
             <Route path="/about" exact={true} component={About} />
-            <Route path="" key="hot" exact={true}>
-              <Feed key="hot" feedName="hot" order_by="-hotness" />
-            </Route>
+
+            <Route
+              path=""
+              key="hot"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <Feed feedName="hot" order_by="-hotness" {...props} />
+              )}
+            />
           </Switch>
         </div>
       </Router>
