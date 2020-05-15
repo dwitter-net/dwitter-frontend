@@ -282,6 +282,11 @@ function App() {
               component={HotHashtagFeed}
             />
             <Route
+              path="/h/:hashtag"
+              exact={true}
+              component={HotHashtagFeed}
+            />
+            <Route
               path="/h/:hashtag/new"
               exact={true}
               component={NewHashtagFeed}
@@ -293,6 +298,11 @@ function App() {
             />
             <Route
               path="/u/:username/hot"
+              exact={true}
+              component={HotUserFeed}
+            />
+            <Route
+              path="/u/:username"
               exact={true}
               component={HotUserFeed}
             />
