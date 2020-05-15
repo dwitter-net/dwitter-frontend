@@ -77,7 +77,7 @@ export async function getDweets(
   return get(
     `dweets/?offset=${page * 10}&username=${encodeURIComponent(
       username
-    )}order_by=${encodeURIComponent(order_by)}&hashtag=${encodeURIComponent(
+    )}&order_by=${encodeURIComponent(order_by)}&hashtag=${encodeURIComponent(
       hashtag
     )}`
   );
