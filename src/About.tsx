@@ -4,8 +4,8 @@ import { RouteComponentProps, Link } from "react-router-dom";
 export const About: React.FC<RouteComponentProps> = () => {
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <div style={{ maxWidth: 600, flex: 1 }}>
-        <div className="card mt-3 p-3">
+      <div style={{ maxWidth: 600, flex: 1, padding: 16 }}>
+        <div className="card p-3">
           <p style={{ fontWeight: "bold" }}>About dwitter.net</p>
           <p>
             Dwitter.net is a challenge to see what awesomeness you can create

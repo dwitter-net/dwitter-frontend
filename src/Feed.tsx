@@ -57,7 +57,8 @@ export const Feed: React.FC<
       <div
         style={{
           maxWidth: 600,
-          paddingTop: 16,
+          width: "100%",
+          padding: 16,
           flex: 1,
           display: "flex",
           flexDirection: "column",

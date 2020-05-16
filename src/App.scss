@@ -67,11 +67,16 @@ header button:focus {
     background: #f5f5f5 !important;
 }
 
-header .dropdown-menu {
+.dropdown-menu {
     border: 0 !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
+}
+
+header .dropdown-menu.right {
     right: 0 !important;
     left: auto !important;
+    top: 64px !important;
+    transform: none !important;
 }
 
 .no-link-styling,
