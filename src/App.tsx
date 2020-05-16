@@ -15,15 +15,9 @@ import {
 import { Feed } from "./Feed";
 import { Login } from "./Login";
 import { UserView } from "./UserView";
-import { AppContext, Context } from "./Context";
+import { AppContext, Context, themes } from "./Context";
 import { About } from "./About";
-import {
-  Dropdown,
-  DropdownToggle,
-  DropdownItem,
-  DropdownMenu,
-  Modal,
-} from "reactstrap";
+import { Dropdown, DropdownToggle, DropdownMenu, Modal } from "reactstrap";
 import { Create } from "./Create";
 import { SingleDweet } from "./SingleDweet";
 import { Settings } from "./Settings";
@@ -120,7 +114,16 @@ function App() {
     currentLoginRequest,
     setCurrentLoginRequest,
   ] = useState<LoginRequest | null>(null);
+
+  let themeMode = localStorage.getItem("themeMode") || "automatic";
+  if (themeMode === "automatic") {
+    themeMode = window.matchMedia("(prefers-colors-scheme: dark)")
+      ? "dark"
+      : "light";
+  }
+
   const [context, setContext] = useState<AppContext>({
+    theme: themes[themeMode],
     user: JSON.parse(localStorage.getItem("user") || "null"),
     requireLogin: async (options: { reason: string; nextAction: string }) => {
       if (localStorage.getItem("user")) {
@@ -186,8 +189,19 @@ function App() {
     <Context.Provider
       value={[context, (partial) => setContext({ ...context, ...partial })]}
     >
+      <style>
+        {`:root {${Object.entries(context.theme)
+          .map(([key, value]) => "--" + key + ": " + value)
+          .join(";")}}`}
+      </style>
       <Router>
-        <div className="App">
+        <div
+          className="App"
+          style={{
+            background: context.theme.pageBackgroundColor,
+            color: context.theme.mainTextColor,
+          }}
+        >
           <header>
             <div
               style={{
@@ -228,9 +242,13 @@ function App() {
                   </DropdownToggle>
                   <DropdownMenu>
                     {menu.map((item) => (
-                      <DropdownItem key={item.name}>
-                        <Link to={item.to}>{item.name}</Link>
-                      </DropdownItem>
+                      <Link
+                        className="dropdown-item"
+                        to={item.to}
+                        onClick={() => setIsMobileNavMenuOpen(false)}
+                      >
+                        {item.name}
+                      </Link>
                     ))}
                   </DropdownMenu>
                 </Dropdown>
@@ -266,23 +284,44 @@ function App() {
                     <UserView user={context.user} />
                   </DropdownToggle>
                   <DropdownMenu className="right">
-                    <DropdownItem>
-                      <Link to={"/u/" + context.user.username + "/top"}>
-                        My profile
-                      </Link>
-                    </DropdownItem>
-                    <DropdownItem>
-                      <Link to={"/u/" + context.user.username + "/awesome"}>
-                        My awesomed dweets
-                      </Link>
-                    </DropdownItem>
-                    <DropdownItem>
-                      <Link to={"/" + context.user.username + "/settings"}>
-                        Settings
-                      </Link>
-                    </DropdownItem>
-                    <DropdownItem divider />
-                    <DropdownItem
+                    <Link
+                      className="dropdown-item"
+                      to={"/u/" + context.user.username + "/top"}
+                      onClick={() => {
+                        setIsUserMenuDropdownOpen(false);
+                      }}
+                    >
+                      My profile
+                    </Link>
+                    <Link
+                      className="dropdown-item"
+                      to={"/u/" + context.user.username + "/awesome"}
+                      onClick={() => {
+                        setIsUserMenuDropdownOpen(false);
+                      }}
+                    >
+                      My awesomed dweets
+                    </Link>
+                    <Link
+                      className="dropdown-item"
+                      to={"/" + context.user.username + "/settings"}
+                      onClick={() => {
+                        setIsUserMenuDropdownOpen(false);
+                      }}
+                    >
+                      Settings
+                    </Link>
+                    <div
+                      style={{
+                        height: 1,
+                        background: context.theme.secondaryBorderColor,
+                        marginTop: 8,
+                        marginBottom: 8,
+                      }}
+                    />
+                    <Link
+                      className="dropdown-item"
+                      to={"/"}
                       onClick={(e) => {
                         e.preventDefault();
                         localStorage.removeItem("token");
@@ -291,7 +330,7 @@ function App() {
                       }}
                     >
                       Log out
-                    </DropdownItem>
+                    </Link>
                   </DropdownMenu>
                 </Dropdown>
               ) : (
@@ -329,11 +368,7 @@ function App() {
               exact={true}
               component={HotHashtagFeed}
             />
-            <Route
-              path="/h/:hashtag"
-              exact={true}
-              component={HotHashtagFeed}
-            />
+            <Route path="/h/:hashtag" exact={true} component={HotHashtagFeed} />
             <Route
               path="/h/:hashtag/new"
               exact={true}
@@ -349,11 +384,7 @@ function App() {
               exact={true}
               component={HotUserFeed}
             />
-            <Route
-              path="/u/:username"
-              exact={true}
-              component={HotUserFeed}
-            />
+            <Route path="/u/:username" exact={true} component={HotUserFeed} />
             <Route
               path="/u/:username/new"
               exact={true}

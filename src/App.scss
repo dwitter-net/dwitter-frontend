@@ -7,10 +7,10 @@ $border-radius: 4px;
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "~highlight.js/styles/github.css";
 
+        html, body {
+background: var(--pageBackgroundColor);
+        }
 
-html, body {
-background: #f5f5f5;
-}
 
 body {
     overflow-y: scroll;
@@ -19,9 +19,9 @@ body {
 
 .App > header {
   height: 64px;
-  background: white;
+  background: var(--mainBackgroundColor);
+  color: var(--mainTextColor);
   box-shadow: 0 0px 4px rgba(0, 0, 0, 0.16);
-  color: black;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -29,18 +29,31 @@ body {
 
 
 .card {
-  background: white;
+  background: var(--mainBackgroundColor);
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
   border: 0;
   overflow: hidden;
 }
 
-input.form-control {
-    background: #f5f5f5;
+.modal-content {
+  background: var(--modalBackgroundColor);
+  color: var(--mainTextColor);
+}
+
+input.form-control,
+input.form-control[readonly] {
+    background: var(--secondaryBackgroundColor);
+    color: var(--mainTextColor);
     border: 0;
-    border-bottom: 1px solid #aaa;
+    border-bottom: 1px solid var(--secondaryBorderColor);
     outline: 0 !important;
 }
+
+input.form-control:focus {
+    background: var(--focusedTextInputBackgroundColor);
+    color: var(--focusedTextInputTextColor);
+}
+
 
 
 header .dropdown > button, 
@@ -57,7 +70,7 @@ header button,
 header button.focus,
 header button:focus {
     background: transparent !important;
-    color: black !important;
+    color: var(--mainTextColor) !important;
     border: 0 !important;
     outline: 0 !important;
     border-radius: 0 !important;
@@ -65,12 +78,13 @@ header button:focus {
 }
 
 header button:focus {
-    background: #f5f5f5 !important;
+    background: var(--secondaryBackgroundColor) !important;
 }
 
 .dropdown-menu {
     border: 0 !important;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.16);
+    background: var(--secondaryBackgroundColor);
 }
 
 header .dropdown-menu.right {
@@ -78,6 +92,20 @@ header .dropdown-menu.right {
     left: auto !important;
     top: 64px !important;
     transform: none !important;
+}
+
+header a.dropdown-item {
+    height: 48px;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding-left: 16px;
+    color: var(--blue);
+
+    &:hover {
+    color: var(--blue);
+        background: var(--secondaryBackgroundColor);
+    }
 }
 
 .no-link-styling,
@@ -99,4 +127,30 @@ header .dropdown-menu.right {
 
 .border-radius {
     border-radius: $border-radius;
+}
+
+header button {
+    color: var(--mainTextColor) !important;
+}
+
+
+/* width */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: var(--secondaryBackgroundColor);
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: var(--secondaryTextColor);
+  border-radius: 4px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: var(--mainTextColor);
 }
