@@ -8,9 +8,31 @@ import { Modal } from "reactstrap";
 import Linkify from "react-linkify";
 import { Context } from "./Context";
 import { Link } from "react-router-dom";
+import hljs from "highlight.js/lib/core";
+import javascriptHLJS from "highlight.js/lib/languages/javascript";
+
+hljs.registerLanguage("js", javascriptHLJS);
 
 interface Props {
   dweet: Dweet;
+}
+
+interface HLJSNodeObject {
+  kind: string;
+  children: HLJSNode[];
+}
+
+type HLJSNode = HLJSNodeObject | string;
+
+function renderHLJSNode(node: HLJSNode, i: number) {
+  if (typeof node === "string") {
+    return <span key={i}>{node}</span>;
+  }
+  return (
+    <span key={i} className={"hljs-" + node.kind}>
+      {node.children.map((child, j) => renderHLJSNode(child, j))}
+    </span>
+  );
 }
 
 export const DweetCard: React.FC<Props> = (props) => {
@@ -267,22 +289,78 @@ export const DweetCard: React.FC<Props> = (props) => {
           </a>
         </div>
       )}
-      {comments.slice(shouldStickyFirstComment ? 1 : 0).map((comment, i) => (
-        <div key={comment.id} style={{ marginTop: 16 }}>
-          <UserView user={comment.author} />
-          <div style={{ marginLeft: 32 + 16 }}>
-            <Linkify
-              componentDecorator={(href, text, key) => (
-                <Link key={key} to={href}>
-                  {text}
-                </Link>
+      {comments.slice(shouldStickyFirstComment ? 1 : 0).map((comment, i) => {
+        let originalText = comment.text;
+        let parts: { text: string; type: "text" | "code" }[] = [
+          { text: "", type: "text" },
+        ];
+        let isInsideBacktickPair = false;
+        let j = 0;
+        while (j < originalText.length) {
+          const letter = originalText[j];
+          if (letter === "\\" && isInsideBacktickPair) {
+            if (originalText[j + 1] === "`") {
+              parts[parts.length - 1].text += "`";
+              j += 2;
+              continue;
+            }
+          }
+          if (letter === "`") {
+            if (!isInsideBacktickPair) {
+              isInsideBacktickPair = true;
+              j++;
+              parts.push({ text: "", type: "code" });
+              continue;
+            } else {
+              isInsideBacktickPair = false;
+              j++;
+              parts.push({ text: "", type: "text" });
+              continue;
+            }
+          }
+
+          parts[parts.length - 1].text += letter;
+          j++;
+        }
+
+        return (
+          <div key={comment.id} style={{ marginTop: 16 }}>
+            <UserView user={comment.author} />
+            <div style={{ marginLeft: 32 + 16 }}>
+              {parts.map((part) =>
+                part.type === "code" ? (
+                  <code
+                    style={{
+                      display: "inline-flex",
+                      background: "hsl(0, 0%, 92.5%)",
+                      borderRadius: 4,
+                      padding: "2px 4px",
+                      fontSize: 12,
+                      flexWrap: "wrap",
+                    }}
+                  >
+                    {hljs
+                      .highlight("js", part.text)
+                      .emitter.rootNode.children.map(
+                        (child: HLJSNode, i: number) => renderHLJSNode(child, i)
+                      )}
+                  </code>
+                ) : (
+                  <Linkify
+                    componentDecorator={(href, text, key) => (
+                      <Link key={key} to={href}>
+                        {text}
+                      </Link>
+                    )}
+                  >
+                    {part.text}
+                  </Linkify>
+                )
               )}
-            >
-              {comment.text}
-            </Linkify>
+            </div>
           </div>
-        </div>
-      ))}
+        );
+      })}
       <form
         style={{ marginTop: 32 }}
         onSubmit={async (e) => {
