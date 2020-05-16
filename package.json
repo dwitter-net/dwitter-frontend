@@ -11,7 +11,7 @@
     "@types/node": "^12.0.0",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
-    "@types/react-linkify": "^0.2.2",
+    "@types/react-linkify": "^0.2.0",
     "@types/react-router-dom": "^5.1.5",
     "@types/reactstrap": "^8.4.2",
     "ace-builds": "^1.4.11",

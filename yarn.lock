@@ -1535,7 +1535,7 @@
   dependencies:
     "@types/react" "*"
 
-"@types/react-linkify@^0.2.2":
+"@types/react-linkify@^0.2.0":
   version "0.2.0"
   resolved "https://registry.yarnpkg.com/@types/react-linkify/-/react-linkify-0.2.0.tgz#4805231ab1caf823b4136f9c5e6cedf2e7ef79a8"
   integrity sha512-dLpsBFPEswCfPPkP6J9RjFKncF15BWusjdgTiEQpWvWOSGWZ6tjr7K3Mt6e+EiWUxtSLzteWxGEq0gwaMFmtsg==
