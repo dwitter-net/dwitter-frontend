@@ -11,6 +11,7 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
     <div style={{ display: "flex", justifyContent: "center" }}>
       <div style={{ maxWidth: 600, flex: 1, padding: 16 }}>
         <div className="card p-3">
+          <h2> Avatar </h2>
           <UserView user={context.user!} />
 
           <p className="mt-3">
@@ -34,6 +35,18 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
           />
+        </div>
+
+        <div className="card p-3 mt-3">
+          <h2> Password </h2>
+          <p className="mt-3">
+
+            <a
+                href="https://www.dwitter.net/password/change"
+            >
+              Change password.
+            </a>
+          </p>
         </div>
       </div>
     </div>
