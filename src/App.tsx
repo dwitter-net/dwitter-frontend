@@ -267,7 +267,9 @@ function App() {
                   </DropdownToggle>
                   <DropdownMenu className="right">
                     <DropdownItem>
-                      <Link to={"/u/" + context.user.username}>My profile</Link>
+                      <Link to={"/u/" + context.user.username + "/top"}>
+                        My profile
+                      </Link>
                     </DropdownItem>
                     <DropdownItem>
                       <Link to={"/u/" + context.user.username + "/awesome"}>

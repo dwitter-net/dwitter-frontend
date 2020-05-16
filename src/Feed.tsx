@@ -46,6 +46,8 @@ export const Feed: React.FC<
     });
   }, [hashtag, page, props.order_by, username]);
 
+  const pathRoot = hashtag ? "/h/" + hashtag : "/u/" + username;
+
   return (
     <div
       style={{
@@ -64,7 +66,7 @@ export const Feed: React.FC<
           flexDirection: "column",
         }}
       >
-        {hashtag ? (
+        {hashtag || username ? (
           <div className="card text-center mb-3 px-3" style={{ padding: 16 }}>
             <div className="d-flex align-items-center">
               <div
@@ -75,11 +77,12 @@ export const Feed: React.FC<
                   textAlign: "left",
                 }}
               >
-                #{hashtag}
+                {hashtag && "#" + hashtag}
+                {username && "u/" + username}
               </div>
               <div style={{ marginLeft: 16, display: "flex" }}>
                 <NavLink
-                  to={`/h/${hashtag}/hot`}
+                  to={`${pathRoot}/hot`}
                   exact={true}
                   style={{
                     width: 48,
@@ -89,7 +92,7 @@ export const Feed: React.FC<
                   hot
                 </NavLink>
                 <NavLink
-                  to={`/h/${hashtag}/new`}
+                  to={`${pathRoot}/new`}
                   exact={true}
                   style={{
                     width: 48,
@@ -99,7 +102,7 @@ export const Feed: React.FC<
                   new
                 </NavLink>
                 <NavLink
-                  to={`/h/${hashtag}/top`}
+                  to={`${pathRoot}/top`}
                   exact={true}
                   style={{
                     width: 48,
