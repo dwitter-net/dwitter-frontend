@@ -38,7 +38,7 @@ const RandomFeed = (props: RouteComponentProps) => (
 );
 
 const TopFeed = (props: RouteComponentProps) => (
-  <Feed order_by="-likes" {...props} />
+  <Feed order_by="-awesome_count" {...props} />
 );
 
 const HotFeed = (props: RouteComponentProps) => (
@@ -50,7 +50,7 @@ const NewHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
 );
 
 const TopHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
-  <Feed order_by="-likes" {...props} />
+  <Feed order_by="-awesome_count" {...props} />
 );
 
 const HotHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
@@ -62,7 +62,7 @@ const HotUserFeed = (props: RouteComponentProps<{ username: string }>) => (
 );
 
 const TopUserFeed = (props: RouteComponentProps<{ username: string }>) => (
-  <Feed order_by="-likes" {...props} />
+  <Feed order_by="-awesome_count" {...props} />
 );
 
 const NewUserFeed = (props: RouteComponentProps<{ username: string }>) => (
@@ -330,6 +330,11 @@ function App() {
               component={HotHashtagFeed}
             />
             <Route
+              path="/h/:hashtag"
+              exact={true}
+              component={HotHashtagFeed}
+            />
+            <Route
               path="/h/:hashtag/new"
               exact={true}
               component={NewHashtagFeed}
@@ -341,6 +346,11 @@ function App() {
             />
             <Route
               path="/u/:username/hot"
+              exact={true}
+              component={HotUserFeed}
+            />
+            <Route
+              path="/u/:username"
               exact={true}
               component={HotUserFeed}
             />
