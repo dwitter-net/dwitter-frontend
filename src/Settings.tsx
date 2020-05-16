@@ -9,7 +9,7 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <div className="mt-3" style={{ maxWidth: 600, flex: 1 }}>
+      <div style={{ maxWidth: 600, flex: 1, padding: 16 }}>
         <div className="card p-3">
           <UserView user={context.user!} />
 

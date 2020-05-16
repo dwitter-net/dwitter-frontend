@@ -147,7 +147,40 @@ function App() {
     },
   });
 
-  const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const [isUserMenuDropdownOpen, setIsUserMenuDropdownOpen] = useState(false);
+  const [isMobileNavMenuOpen, setIsMobileNavMenuOpen] = useState(false);
+
+  const menu = [
+    {
+      name: "hot",
+      to: "/",
+      width: 48,
+    },
+    {
+      name: "new",
+      to: "/new",
+      width: 48,
+    },
+    {
+      name: "top",
+      to: "/top",
+      width: 48,
+    },
+    {
+      name: "random",
+      to: "/random",
+      width: 80,
+    },
+    {
+      name: "about",
+      to: "/about",
+      width: 80,
+    },
+  ];
+
+  const collapsedMenuItem = menu.find(
+    (item) => item.to === window.location.pathname
+  ) || { name: "menu", to: "/" };
 
   return (
     <Context.Provider
@@ -159,6 +192,8 @@ function App() {
             <div
               style={{
                 maxWidth: 600,
+                paddingLeft: 16,
+                paddingRight: 16,
                 display: "flex",
                 alignItems: "center",
                 flex: 1,
@@ -170,56 +205,67 @@ function App() {
                   Dwitter.net
                 </a>
               </div>
-              <NavLink
-                to="/"
-                exact={true}
-                style={{ width: 48 }}
-                activeStyle={{ fontWeight: "bold" }}
-              >
-                hot
-              </NavLink>
-              <NavLink
-                to="/new"
-                exact={true}
-                style={{ width: 48 }}
-                activeStyle={{ fontWeight: "bold" }}
-              >
-                new
-              </NavLink>
-              <NavLink
-                to="/top"
-                exact={true}
-                style={{ width: 48 }}
-                activeStyle={{ fontWeight: "bold" }}
-              >
-                top
-              </NavLink>
-              <NavLink
-                to="/random"
-                exact={true}
-                style={{ width: 64 + 16 }}
-                activeStyle={{ fontWeight: "bold" }}
-              >
-                random
-              </NavLink>
-              <NavLink
-                to="/about"
-                exact={true}
-                style={{ width: 64 + 16 }}
-                activeStyle={{ fontWeight: "bold" }}
-              >
-                about
-              </NavLink>
+              <div className="d-flex d-sm-none">
+                <Dropdown
+                  isOpen={isMobileNavMenuOpen}
+                  toggle={() => setIsMobileNavMenuOpen(!isMobileNavMenuOpen)}
+                >
+                  <DropdownToggle caret={true}>
+                    <NavLink
+                      to={collapsedMenuItem.to}
+                      exact={true}
+                      style={{
+                        pointerEvents: "none",
+                        display: "inline-block",
+                        marginRight: 8,
+                      }}
+                      activeStyle={{
+                        fontWeight: "bold",
+                      }}
+                    >
+                      {collapsedMenuItem.name}
+                    </NavLink>
+                  </DropdownToggle>
+                  <DropdownMenu>
+                    {menu.map((item) => (
+                      <DropdownItem key={item.name}>
+                        <Link to={item.to}>{item.name}</Link>
+                      </DropdownItem>
+                    ))}
+                  </DropdownMenu>
+                </Dropdown>
+              </div>
+              <div className="d-none d-sm-flex">
+                {menu.map((item) => (
+                  <NavLink
+                    key={item.name}
+                    to={item.to}
+                    exact={true}
+                    style={{ width: item.width }}
+                    activeStyle={{ fontWeight: "bold" }}
+                  >
+                    {item.name}
+                  </NavLink>
+                ))}
+              </div>
               <div style={{ flex: 1 }} />
               {context.user ? (
                 <Dropdown
-                  isOpen={isDropdownOpen}
-                  toggle={() => setIsDropdownOpen(!isDropdownOpen)}
+                  isOpen={isUserMenuDropdownOpen}
+                  toggle={() =>
+                    setIsUserMenuDropdownOpen(!isUserMenuDropdownOpen)
+                  }
+                  style={{ marginRight: -16 }}
                 >
-                  <DropdownToggle>
+                  <DropdownToggle
+                    style={{
+                      paddingLeft: 16,
+                      paddingRight: 16,
+                    }}
+                  >
                     <UserView user={context.user} />
                   </DropdownToggle>
-                  <DropdownMenu>
+                  <DropdownMenu className="right">
                     <DropdownItem>
                       <Link to={"/u/" + context.user.username}>My profile</Link>
                     </DropdownItem>
