@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { Dweet, setLike, addComment } from "./api";
 import { UserView } from "./UserView";
+import { ReportButton } from "./ReportButton";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -218,6 +219,7 @@ export const DweetCard: React.FC<Props> = (props) => {
             </div>
           </div>
         </div>
+        <ReportButton dweetId={dweet.id} isEmptyStateDweet={isEmptyStateDweet} />
         <a
           href="#"
           style={{
