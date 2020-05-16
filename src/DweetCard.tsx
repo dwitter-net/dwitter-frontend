@@ -327,7 +327,7 @@ export const DweetCard: React.FC<Props> = (props) => {
               }
               disabled={replyText.length === 0}
             >
-              Reply
+              Comment
             </button>
           </div>
         </div>
