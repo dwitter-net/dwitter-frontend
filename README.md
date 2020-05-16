@@ -6,6 +6,17 @@ This project was bootstrapped with [Create React App](https://github.com/faceboo
 
 Install the dependencies.
 
+### Configure
+
+Edit .env and make sure it points to a valid api url. By default it targets a local instance of [dwitter](github.com/lionleaf/dwitter).
+
+If you want to talk directly to the live backend you can change it to (note: *https*):
+```
+REACT_APP_API_BASE_URL=https://www.dwitter.net/apiv2beta/
+REACT_APP_API_EMBED_BASE_URL=https://dweet.dwitter.net/
+```
+
+
 ## Available Scripts
 
 In the project directory, you can run:
