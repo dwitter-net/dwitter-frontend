@@ -5,6 +5,7 @@ $spacer: 16px;
 $border-radius: 4px;
 
 @import "node_modules/bootstrap/scss/bootstrap";
+@import "~highlight.js/styles/github.css";
 
 
 html, body {
