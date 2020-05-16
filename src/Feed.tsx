@@ -150,10 +150,12 @@ export const Feed: React.FC<
             </div>
           </div>
         )}
-        {dweets &&
-          dweets
-            .flat()
-            .map((dweet) => <DweetCard key={dweet.id} dweet={dweet} />)}
+
+        {dweets.length === 0 && <DweetCard dweet={null} />}
+
+        {dweets.flat().map((dweet) => (
+          <DweetCard key={dweet.id} dweet={dweet} />
+        ))}
       </div>
       <div
         ref={infiniteScrollSensorDivRef}

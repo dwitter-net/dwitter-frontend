@@ -10,7 +10,7 @@ import { Context } from "./Context";
 import { Link } from "react-router-dom";
 
 interface Props {
-  dweet: Dweet;
+  dweet: Dweet | null;
 }
 
 export const DweetCard: React.FC<Props> = (props) => {
@@ -22,9 +22,12 @@ export const DweetCard: React.FC<Props> = (props) => {
   const [isAwesomeLoading, setIsAwesomeLoading] = useState(false);
   const [updatedDweet, setUpdatedDweet] = useState<Dweet | null>(null);
   const [replyText, setReplyText] = useState("");
-  const [shouldShowIframe, setShouldShowIframe] = useState(false);
+  const [originalShouldShowIframe, setShouldShowIframe] = useState(false);
 
   const [context, _] = useContext(Context);
+
+  const isEmptyStateDweet = props.dweet === null;
+  const shouldShowIframe = originalShouldShowIframe && !isEmptyStateDweet;
 
   useEffect(() => {
     if (!iframeContainer) {
@@ -40,12 +43,27 @@ export const DweetCard: React.FC<Props> = (props) => {
     observer.observe(iframeContainer);
   }, [iframeContainer, shouldShowIframe]);
 
-  const [code, setCode] = useState(props.dweet.code);
   const [showShareModal, setShowShareModal] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const dweet = updatedDweet ? updatedDweet : props.dweet;
+  const dweet: Dweet = (updatedDweet ? updatedDweet : props.dweet) || {
+    id: -1,
+    code: "",
+    awesome_count: 0,
+    author: {
+      id: -1,
+      username: "",
+      avatar: "",
+    },
+    posted: "",
+    link: "",
+    has_user_awesomed: false,
+    comments: [],
+    remix_of: null,
+  };
+
+  const [code, setCode] = useState(dweet?.code || "");
 
   const shouldStickyFirstComment =
     dweet.comments.length > 0 &&
@@ -125,10 +143,10 @@ export const DweetCard: React.FC<Props> = (props) => {
                   borderBottomLeftRadius: 4,
                 }}
               >
-                {dweet.awesome_count}
+                {!isEmptyStateDweet && dweet.awesome_count}
               </div>
               <button
-                disabled={isAwesomeLoading}
+                disabled={isAwesomeLoading || isEmptyStateDweet}
                 className={
                   dweet.has_user_awesomed
                     ? "btn btn-primary"
@@ -142,6 +160,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                   alignItems: "center",
                   borderTopLeftRadius: 0,
                   borderBottomLeftRadius: 0,
+                  ...(isEmptyStateDweet ? { color: "#0000" } : {}),
                 }}
                 onClick={async (e) => {
                   //@ts-ignore
@@ -179,9 +198,17 @@ export const DweetCard: React.FC<Props> = (props) => {
         </div>
         <a
           href="#"
-          style={{ marginLeft: 16 }}
+          style={{
+            marginLeft: 16,
+            ...(isEmptyStateDweet
+              ? { background: "var(--blue)", borderRadius: 4, opacity: 0.33 }
+              : {}),
+          }}
           onClick={(e) => {
             e.preventDefault();
+            if (isEmptyStateDweet) {
+              return;
+            }
             setShowShareModal(true);
           }}
         >
@@ -189,9 +216,17 @@ export const DweetCard: React.FC<Props> = (props) => {
         </a>
         <a
           href="#"
-          style={{ marginLeft: 16 }}
+          style={{
+            marginLeft: 16,
+            ...(isEmptyStateDweet
+              ? { background: "var(--blue)", borderRadius: 4, opacity: 0.33 }
+              : {}),
+          }}
           onClick={(e) => {
             e.preventDefault();
+            if (isEmptyStateDweet) {
+              return;
+            }
             iframeContainer?.requestFullscreen();
           }}
         >
@@ -209,26 +244,31 @@ export const DweetCard: React.FC<Props> = (props) => {
           padding: 16,
           color: "gray",
           fontFamily: "monospace",
+          ...(isEmptyStateDweet ? { color: "#0000" } : {}),
         }}
       >
         function u(t){" {"}
-        <AceEditor
-          showGutter={false}
-          showPrintMargin={false}
-          value={code}
-          mode="javascript"
-          theme="monokai"
-          onChange={(code) => {
-            setCode(code);
-          }}
-          style={{
-            width: "100%",
-            height: 64,
-            border: 0,
-            background: "transparent",
-            color: "white",
-          }}
-        />
+        <div style={{ height: 64 }}>
+          {!isEmptyStateDweet && (
+            <AceEditor
+              showGutter={false}
+              showPrintMargin={false}
+              value={code}
+              mode="javascript"
+              theme="monokai"
+              onChange={(code) => {
+                setCode(code);
+              }}
+              style={{
+                width: "100%",
+                height: 64,
+                border: 0,
+                background: "transparent",
+                color: "white",
+              }}
+            />
+          )}
+        </div>
         {"}"}
         // {code.length}/140
         <div style={{ float: "right" }}>
@@ -312,6 +352,7 @@ export const DweetCard: React.FC<Props> = (props) => {
         >
           <input
             type="text"
+            disabled={isEmptyStateDweet}
             ref={inputRef}
             style={{ paddingRight: 64 }}
             className="form-control"
@@ -320,12 +361,16 @@ export const DweetCard: React.FC<Props> = (props) => {
           />
           <div style={{ position: "absolute", right: 0, top: 0, bottom: 0 }}>
             <button
-              style={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }}
+              style={{
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                ...(isEmptyStateDweet ? { color: "#0000" } : {}),
+              }}
               className={
                 "btn " +
                 (replyText.length === 0 ? "btn-secondary" : "btn-primary")
               }
-              disabled={replyText.length === 0}
+              disabled={replyText.length === 0 || isEmptyStateDweet}
             >
               Reply
             </button>
