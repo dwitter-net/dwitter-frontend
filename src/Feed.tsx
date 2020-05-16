@@ -1,7 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useContext } from "react";
 import { DweetCard } from "./DweetCard";
 import { Dweet, getDweets } from "./api";
 import { Link, RouteComponentProps, NavLink } from "react-router-dom";
+import { Context } from "./Context";
 
 interface Props {
   order_by: string;
@@ -18,6 +19,7 @@ export const Feed: React.FC<
   const username = props.match.params.username || "";
   const infiniteScrollSensorDivRef = useRef<HTMLDivElement>(null);
   const infiniteScrollSensorDiv = infiniteScrollSensorDivRef.current;
+  const [context, _] = useContext(Context);
 
   useEffect(() => {
     if (!infiniteScrollSensorDiv) {
@@ -67,7 +69,7 @@ export const Feed: React.FC<
         }}
       >
         {hashtag || username ? (
-          <div className="card text-center mb-3 px-3" style={{ padding: 16 }}>
+          <div className="card text-center mb-3 p-3">
             <div className="d-flex align-items-center">
               <div
                 style={{
@@ -136,8 +138,8 @@ export const Feed: React.FC<
             </Link>
             <div
               style={{
-                color: "#222",
-                background: "#eee",
+                background: context.theme.secondaryBackgroundColor,
+                color: context.theme.secondaryTextColor,
                 marginTop: -4,
                 marginBottom: -4,
                 marginLeft: -16,

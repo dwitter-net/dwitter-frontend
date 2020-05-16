@@ -160,7 +160,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                   alignItems: "center",
                   justifyContent: "center",
                   display: "flex",
-                  background: "#f5f5f5",
+                  background: context.theme.pageBackgroundColor,
                   borderTopLeftRadius: 4,
                   borderBottomLeftRadius: 4,
                 }}
@@ -260,7 +260,7 @@ export const DweetCard: React.FC<Props> = (props) => {
       </div>
       <div
         style={{
-          background: "#222",
+          background: context.theme.codeEditorBackgroundColor,
           marginLeft: -16,
           marginRight: -16,
           padding: 16,
@@ -274,7 +274,9 @@ export const DweetCard: React.FC<Props> = (props) => {
           {!isEmptyStateDweet && (
             <AceEditor
               showGutter={false}
+              wrapEnabled={true}
               showPrintMargin={false}
+              highlightActiveLine={false}
               value={code}
               mode="javascript"
               theme="monokai"
@@ -291,8 +293,7 @@ export const DweetCard: React.FC<Props> = (props) => {
             />
           )}
         </div>
-        {"}"}
-        // {code.length}/140
+        {"}"} // {[...code].length}/140
         <div style={{ float: "right" }}>
           <a
             className="no-link-styling"
@@ -310,7 +311,10 @@ export const DweetCard: React.FC<Props> = (props) => {
             justifyContent: "center",
             alignItems: "center",
             fontWeight: "bold",
-            borderBottom: dweet.comments.length > 1 ? "1px solid #eee" : "none",
+            borderBottom:
+              dweet.comments.length > 1
+                ? `1px solid ${context.theme.secondaryBorderColor}`
+                : "none",
           }}
         >
           <Linkify>{comments[0].text}</Linkify>
