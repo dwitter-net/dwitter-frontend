@@ -62,7 +62,7 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
                   if (themeMode === "automatic") {
                     themeMode = window.matchMedia(
                       "(prefers-colors-scheme: dark)"
-                    )
+                    ).matches
                       ? "dark"
                       : "light";
                   }

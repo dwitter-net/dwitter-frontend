@@ -117,7 +117,7 @@ function App() {
 
   let themeMode = localStorage.getItem("themeMode") || "automatic";
   if (themeMode === "automatic") {
-    themeMode = window.matchMedia("(prefers-colors-scheme: dark)")
+    themeMode = window.matchMedia("(prefers-colors-scheme: dark)").matches
       ? "dark"
       : "light";
   }
