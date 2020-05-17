@@ -295,15 +295,6 @@ function App() {
                     </Link>
                     <Link
                       className="dropdown-item"
-                      to={"/u/" + context.user.username + "/awesome"}
-                      onClick={() => {
-                        setIsUserMenuDropdownOpen(false);
-                      }}
-                    >
-                      My awesomed dweets
-                    </Link>
-                    <Link
-                      className="dropdown-item"
                       to={"/" + context.user.username + "/settings"}
                       onClick={() => {
                         setIsUserMenuDropdownOpen(false);
