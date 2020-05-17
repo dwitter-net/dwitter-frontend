@@ -15,7 +15,7 @@ import {
 import { Feed } from "./Feed";
 import { Login } from "./Login";
 import { UserView } from "./UserView";
-import { AppContext, Context, themes } from "./Context";
+import { AppContext, Context, pageMaxWidth, themes } from "./Context";
 import { About } from "./About";
 import { Dropdown, DropdownToggle, DropdownMenu, Modal } from "reactstrap";
 import { Create } from "./Create";
@@ -205,7 +205,7 @@ function App() {
           <header>
             <div
               style={{
-                maxWidth: 600,
+                maxWidth: pageMaxWidth,
                 paddingLeft: 16,
                 paddingRight: 16,
                 display: "flex",

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { getDweet, Dweet } from "./api";
 import { DweetCard } from "./DweetCard";
+import { pageMaxWidth } from "./Context";
 
 export const SingleDweet: React.FC<RouteComponentProps<{ id: string }>> = (
   props
@@ -14,7 +15,7 @@ export const SingleDweet: React.FC<RouteComponentProps<{ id: string }>> = (
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
-      <div className="mt-3" style={{ maxWidth: 600, flex: 1 }}>
+      <div className="mt-3" style={{ maxWidth: pageMaxWidth, flex: 1 }}>
         {dweet && <DweetCard dweet={dweet} />}
       </div>
     </div>
