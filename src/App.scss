@@ -141,12 +141,13 @@ header button {
 
 /* Track */
 ::-webkit-scrollbar-track {
-  background: var(--secondaryBackgroundColor);
+  background: rgba(127, 127, 127, 0.3);
+  border-radius: 4px;
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
-  background: var(--secondaryTextColor);
+  background: rgba(127, 127, 127, 0.5);
   border-radius: 4px;
 }
 
