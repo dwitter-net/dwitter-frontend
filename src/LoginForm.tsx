@@ -96,7 +96,7 @@ export const LoginForm = (props: Props) => {
       )}
 
       <button
-        className="btn btn-primary mb-3 mt-3"
+        className="btn btn-primary mb-3 mt-3 shadow-primary"
         style={{ alignSelf: "flex-end" }}
         disabled={isLoading}
       >

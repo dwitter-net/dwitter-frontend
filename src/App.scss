@@ -154,3 +154,7 @@ header button {
 ::-webkit-scrollbar-thumb:hover {
   background: var(--mainTextColor);
 }
+
+a.no-link-color {
+    color: inherit;
+}
