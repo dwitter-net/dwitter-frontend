@@ -2,7 +2,7 @@ import React from "react";
 import { User } from "./api";
 import { Link } from "react-router-dom";
 
-export const UserView: React.FC<{ user: User }> = (props) => {
+export const UserView: React.FC<{ user: User; link?: boolean }> = (props) => {
   return (
     <div
       style={{
@@ -22,14 +22,13 @@ export const UserView: React.FC<{ user: User }> = (props) => {
         }}
       />
 
-  <Link to={"/u/" + props.user.username}>
-  <div style={{ fontWeight: "bold" }}>
-      <span style={{ opacity: "0.5",}}>
-          u/
-      </span>
-      {props.user.username}
+      {props.link !== false ? (
+        <Link to={"/u/" + props.user.username} className="no-link-color">
+          <div style={{ fontWeight: "bold" }}>{props.user.username}</div>
+        </Link>
+      ) : (
+        <div style={{ fontWeight: "bold" }}>{props.user.username}</div>
+      )}
     </div>
-  </Link>
-  </div>
   );
 };

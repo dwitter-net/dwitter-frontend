@@ -281,7 +281,7 @@ function App() {
                       paddingRight: 16,
                     }}
                   >
-                    <UserView user={context.user} />
+                    <UserView user={context.user} link={false} />
                   </DropdownToggle>
                   <DropdownMenu className="right">
                     <Link
@@ -291,7 +291,7 @@ function App() {
                         setIsUserMenuDropdownOpen(false);
                       }}
                     >
-                      My profile
+                      My dweets
                     </Link>
                     <Link
                       className="dropdown-item"

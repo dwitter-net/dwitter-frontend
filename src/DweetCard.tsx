@@ -219,7 +219,10 @@ export const DweetCard: React.FC<Props> = (props) => {
             </div>
           </div>
         </div>
-        <ReportButton dweetId={dweet.id} isEmptyStateDweet={isEmptyStateDweet} />
+        <ReportButton
+          dweetId={dweet.id}
+          isEmptyStateDweet={isEmptyStateDweet}
+        />
         <a
           href="#"
           style={{
