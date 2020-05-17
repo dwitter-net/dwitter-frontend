@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef, useContext } from "react";
 import { Dweet, setLike, addComment } from "./api";
 import { UserView } from "./UserView";
 import { ReportButton } from "./ReportButton";
+import { RemixOf } from "./RemixOf";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -260,8 +261,16 @@ export const DweetCard: React.FC<Props> = (props) => {
           Fullscreen
         </a>
       </div>
-      <div className="mb-3">
-        <UserView user={dweet.author} />
+      <div style={{
+        display:"inline-block",
+          width: "100%",
+      }}>
+        <div className="mb-3" style={{
+          float:"left"
+        }}>
+          <UserView user={dweet.author} />
+        </div>
+          <RemixOf dweet={dweet.remix_of} />
       </div>
       <div
         style={{
