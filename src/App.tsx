@@ -15,7 +15,7 @@ import {
 import { Feed } from "./Feed";
 import { Login } from "./Login";
 import { UserView } from "./UserView";
-import { AppContext, Context, themes } from "./Context";
+import { AppContext, Context, pageMaxWidth, themes } from "./Context";
 import { About } from "./About";
 import { Dropdown, DropdownToggle, DropdownMenu, Modal } from "reactstrap";
 import { Create } from "./Create";
@@ -142,7 +142,7 @@ function App() {
 
   let themeMode = localStorage.getItem("themeMode") || "automatic";
   if (themeMode === "automatic") {
-    themeMode = window.matchMedia("(prefers-colors-scheme: dark)")
+    themeMode = window.matchMedia("(prefers-colors-scheme: dark)").matches
       ? "dark"
       : "light";
   }
@@ -233,7 +233,7 @@ function App() {
           <header>
             <div
               style={{
-                maxWidth: 600,
+                maxWidth: pageMaxWidth,
                 paddingLeft: 16,
                 paddingRight: 16,
                 display: "flex",
@@ -309,7 +309,7 @@ function App() {
                       paddingRight: 16,
                     }}
                   >
-                    <UserView user={context.user} />
+                    <UserView user={context.user} link={false} />
                   </DropdownToggle>
                   <DropdownMenu className="right">
                     <Link
@@ -319,16 +319,7 @@ function App() {
                         setIsUserMenuDropdownOpen(false);
                       }}
                     >
-                      My profile
-                    </Link>
-                    <Link
-                      className="dropdown-item"
-                      to={"/u/" + context.user.username + "/awesome"}
-                      onClick={() => {
-                        setIsUserMenuDropdownOpen(false);
-                      }}
-                    >
-                      My awesomed dweets
+                      My dweets
                     </Link>
                     <Link
                       className="dropdown-item"

@@ -44,6 +44,8 @@ export const themes: { [key: string]: Theme } = {
   },
 };
 
+export const pageMaxWidth = 600 + 32;
+
 export interface AppContext {
   theme: Theme;
   user: User | null;

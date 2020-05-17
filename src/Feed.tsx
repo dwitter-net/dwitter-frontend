@@ -4,6 +4,7 @@ import { Dweet, getDweets } from "./api";
 import { Link, RouteComponentProps, NavLink } from "react-router-dom";
 import { Context } from "./Context";
 import { Helmet } from "react-helmet";
+import { pageMaxWidth } from "./Context";
 
 interface Props {
   order_by: string;
@@ -65,7 +66,7 @@ export const Feed: React.FC<
       </Helmet>
       <div
         style={{
-          maxWidth: 600,
+          maxWidth: pageMaxWidth,
           width: "100%",
           padding: 16,
           flex: 1,

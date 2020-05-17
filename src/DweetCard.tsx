@@ -95,7 +95,7 @@ export const DweetCard: React.FC<Props> = (props) => {
   const shouldCollapseComments =
     dweet.comments.length > 6 && !shouldExpandComments;
   const comments = shouldCollapseComments
-    ? [dweet.comments[0], ...dweet.comments.slice(dweet.comments.length - 4)]
+    ? dweet.comments.slice(dweet.comments.length - 5)
     : dweet.comments;
 
   return (
@@ -219,7 +219,10 @@ export const DweetCard: React.FC<Props> = (props) => {
             </div>
           </div>
         </div>
-        <ReportButton dweetId={dweet.id} isEmptyStateDweet={isEmptyStateDweet} />
+        <ReportButton
+          dweetId={dweet.id}
+          isEmptyStateDweet={isEmptyStateDweet}
+        />
         <a
           href="#"
           style={{
@@ -319,7 +322,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 : "none",
           }}
         >
-          <Linkify>{comments[0].text}</Linkify>
+          <Linkify>{dweet.comments[0].text}</Linkify>
         </div>
       )}
       {shouldCollapseComments && (
