@@ -121,6 +121,12 @@ export async function addComment(
   });
 }
 
+export async function reportDweet(dweetId: number) {
+  return post(`dweets/${dweetId}/report/`, {
+    data: {},
+  });
+}
+
 export async function postDweet(code: string, comment?: string) {
   return post(`dweets/`, {
     data: {
