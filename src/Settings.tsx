@@ -2,6 +2,7 @@ import React, { useState, useContext } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { UserView } from "./UserView";
 import { Context, themes } from "./Context";
+import { Helmet } from "react-helmet";
 
 export const Settings: React.FC<RouteComponentProps> = (props) => {
   const [email, setEmail] = useState("");
@@ -9,6 +10,9 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
+      <Helmet>
+        <title>Settings</title>
+      </Helmet>
       <div style={{ maxWidth: 600, flex: 1, padding: 16 }}>
         <div className="card p-3">
           <UserView user={context.user!} />
