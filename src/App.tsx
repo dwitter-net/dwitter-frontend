@@ -210,6 +210,8 @@ function App() {
     (item) => item.to === window.location.pathname
   ) || { name: "menu", to: "/" };
 
+  const faviconFolder = "/favicon-" + context.theme.key + "/";
+
   return (
     <Context.Provider
       value={[context, (partial) => setContext({ ...context, ...partial })]}
@@ -229,6 +231,23 @@ function App() {
         >
           <Helmet titleTemplate={"%s | Dwitter.net"}>
             <title>Dwitter.net - Javascript demos in 140 characters</title>
+            <link
+              rel="apple-touch-icon"
+              sizes="180x180"
+              href={faviconFolder + "apple-touch-icon.png"}
+            />
+            <link
+              rel="icon"
+              type="image/png"
+              sizes="32x32"
+              href={faviconFolder + "favicon-32x32.png"}
+            />
+            <link
+              rel="icon"
+              type="image/png"
+              sizes="16x16"
+              href={faviconFolder + "favicon-16x16.png"}
+            />
           </Helmet>
           <header>
             <div
