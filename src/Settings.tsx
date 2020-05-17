@@ -1,6 +1,7 @@
 import React, { useState, useContext } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { UserView } from "./UserView";
+import { Helmet } from "react-helmet";
 import { Context, pageMaxWidth, themes } from "./Context";
 
 export const Settings: React.FC<RouteComponentProps> = (props) => {
@@ -9,6 +10,9 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
 
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
+      <Helmet>
+        <title>Settings</title>
+      </Helmet>
       <div style={{ maxWidth: pageMaxWidth, flex: 1, padding: 16 }}>
         <div className="card p-3">
           <UserView user={context.user!} />

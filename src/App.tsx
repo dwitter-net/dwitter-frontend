@@ -22,45 +22,70 @@ import { Create } from "./Create";
 import { SingleDweet } from "./SingleDweet";
 import { Settings } from "./Settings";
 import { LoginForm } from "./LoginForm";
+import { Helmet } from "react-helmet";
 
 const NewFeed = (props: RouteComponentProps) => (
-  <Feed order_by="-posted" {...props} />
+  <Feed name="New dweets" order_by="-posted" {...props} />
 );
 
 const RandomFeed = (props: RouteComponentProps) => (
-  <Feed order_by="?" {...props} />
+  <Feed name="Random dweets" order_by="?" {...props} />
 );
 
 const TopFeed = (props: RouteComponentProps) => (
-  <Feed order_by="-awesome_count" {...props} />
+  <Feed name="Top dweets" order_by="-awesome_count" {...props} />
 );
 
 const HotFeed = (props: RouteComponentProps) => (
-  <Feed order_by="-hotness" {...props} />
+  <Feed name="Hot dweets" order_by="-hotness" {...props} />
 );
 
 const NewHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
-  <Feed order_by="-posted" {...props} />
+  <Feed
+    name={"New dweets for #" + props.match.params.hashtag}
+    order_by="-posted"
+    {...props}
+  />
 );
 
 const TopHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
-  <Feed order_by="-awesome_count" {...props} />
+  <Feed
+    name={"Top dweets for #" + props.match.params.hashtag}
+    order_by="-awesome_count"
+    {...props}
+  />
 );
 
 const HotHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
-  <Feed order_by="-hotness" {...props} />
+  <Feed
+    name={"Hot dweets for #" + props.match.params.hashtag}
+    order_by="-hotness"
+    {...props}
+  />
 );
 
 const HotUserFeed = (props: RouteComponentProps<{ username: string }>) => (
-  <Feed order_by="-hotness" {...props} />
+  <Feed
+    name={"Hot dweets for u/" + props.match.params.username}
+    order_by="-hotness"
+    {...props}
+  />
 );
 
 const TopUserFeed = (props: RouteComponentProps<{ username: string }>) => (
-  <Feed order_by="-awesome_count" {...props} />
+  <Feed
+    name={"Top dweets for u/" + props.match.params.username}
+    order_by="-awesome_count"
+    {...props}
+  />
 );
 
 const NewUserFeed = (props: RouteComponentProps<{ username: string }>) => (
-  <Feed order_by="-posted" {...props} />
+  <Feed
+    name={"New dweets for u/" + props.match.params.username}
+    order_by="-posted"
+    {...props}
+  />
 );
 
 for (const item of [
@@ -202,6 +227,9 @@ function App() {
             color: context.theme.mainTextColor,
           }}
         >
+          <Helmet titleTemplate={"%s | Dwitter.net"}>
+            <title>Dwitter.net - Javascript demos in 140 characters</title>
+          </Helmet>
           <header>
             <div
               style={{

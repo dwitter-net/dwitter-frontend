@@ -3,10 +3,12 @@ import { DweetCard } from "./DweetCard";
 import { Dweet, getDweets } from "./api";
 import { Link, RouteComponentProps, NavLink } from "react-router-dom";
 import { Context } from "./Context";
+import { Helmet } from "react-helmet";
 import { pageMaxWidth } from "./Context";
 
 interface Props {
   order_by: string;
+  name: string;
 }
 
 export const Feed: React.FC<
@@ -20,7 +22,7 @@ export const Feed: React.FC<
   const username = props.match.params.username || "";
   const infiniteScrollSensorDivRef = useRef<HTMLDivElement>(null);
   const infiniteScrollSensorDiv = infiniteScrollSensorDivRef.current;
-  const [context, _] = useContext(Context);
+  const [context] = useContext(Context);
 
   useEffect(() => {
     if (!infiniteScrollSensorDiv) {
@@ -59,6 +61,9 @@ export const Feed: React.FC<
         position: "relative",
       }}
     >
+      <Helmet>
+        <title>{props.name}</title>
+      </Helmet>
       <div
         style={{
           maxWidth: pageMaxWidth,

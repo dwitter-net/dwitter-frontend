@@ -1,10 +1,14 @@
 import React from "react";
 import { RouteComponentProps, Link } from "react-router-dom";
+import { Helmet } from "react-helmet";
 import { pageMaxWidth } from "./Context";
 
 export const About: React.FC<RouteComponentProps> = () => {
   return (
     <div style={{ display: "flex", justifyContent: "center" }}>
+      <Helmet>
+        <title>About</title>
+      </Helmet>
       <div style={{ maxWidth: pageMaxWidth, flex: 1, padding: 16 }}>
         <div className="card p-3">
           <p style={{ fontWeight: "bold" }}>About dwitter.net</p>
