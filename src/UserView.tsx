@@ -1,5 +1,6 @@
 import React from "react";
 import { User } from "./api";
+import { Link } from "react-router-dom";
 
 export const UserView: React.FC<{ user: User }> = (props) => {
   return (
@@ -21,7 +22,14 @@ export const UserView: React.FC<{ user: User }> = (props) => {
         }}
       />
 
-      <div style={{ fontWeight: "bold" }}>{props.user.username}</div>
+  <Link to={"/u/" + props.user.username}>
+  <div style={{ fontWeight: "bold" }}>
+      <span style={{ opacity: "0.5",}}>
+          u/
+      </span>
+      {props.user.username}
     </div>
+  </Link>
+  </div>
   );
 };
