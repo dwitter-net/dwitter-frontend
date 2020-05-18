@@ -1,6 +1,6 @@
 import React, { useState, useContext } from "react";
 import { Context } from "./Context";
-import { login, getUser } from "./api";
+import { login, getLoggedInUser } from "./api";
 
 interface Props {
   onLogin: () => void;
@@ -10,7 +10,7 @@ interface Props {
 export const LoginForm = (props: Props) => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
-  const [_, setContext] = useContext(Context);
+  const [, setContext] = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<{
     username?: string[];
@@ -38,7 +38,7 @@ export const LoginForm = (props: Props) => {
         try {
           const data = await login(username, password);
           localStorage.setItem("token", data.token);
-          const user = await getUser("me");
+          const user = await getLoggedInUser();
           setContext({ user });
           localStorage.setItem("user", JSON.stringify(user));
           setUsername("");

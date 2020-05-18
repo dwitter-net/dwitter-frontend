@@ -4,6 +4,13 @@ export interface User {
   avatar: string;
 }
 
+export interface LoggedInUser {
+  id: number;
+  username: string;
+  avatar: string;
+  email: string;
+}
+
 export interface DweetComment {
   id: number;
   text: string;
@@ -106,6 +113,10 @@ export async function login(
   return post("api-token-auth/", { data: { username, password } });
 }
 
+export async function getLoggedInUser(): Promise<LoggedInUser> {
+  return get("users/me/");
+}
+
 export async function getUser(id: string): Promise<User> {
   return get("users/" + id + "/");
 }
@@ -132,6 +143,23 @@ export async function postDweet(code: string, comment?: string) {
     data: {
       code,
       "first-comment": comment,
+    },
+  });
+}
+
+export async function setPassword(old_password: string, new_password: string) {
+  return post(`users/me/set_password/`, {
+    data: {
+      old_password,
+      new_password,
+    },
+  });
+}
+
+export async function setEmail(email: string) {
+  return post(`users/me/set_email/`, {
+    data: {
+      email,
     },
   });
 }
