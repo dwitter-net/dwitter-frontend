@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { Dweet, setLike, addComment } from "./api";
-import { UserView } from "./UserView";
+import { UserView, UserViewRight } from "./UserView";
 import { ReportButton } from "./ReportButton";
-import { RemixOf } from "./RemixOf";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
 import "ace-builds/src-noconflict/theme-monokai";
@@ -270,7 +269,23 @@ export const DweetCard: React.FC<Props> = (props) => {
         }}>
           <UserView user={dweet.author} />
         </div>
-          <RemixOf dweet={dweet.remix_of} />
+          { dweet.remix_of  &&
+          <div className="mb-3" style={{
+            float:"right"
+          }}>
+            {'Remix of '}
+            <Link to={"/d/" + dweet.remix_of.id} className="no-link-color" >
+              <span style={{
+                  opacity:"0.5"
+                }}>
+                  d/
+              </span>
+              {dweet.remix_of.id}
+            </Link>
+            {' by '}
+            <UserViewRight user={dweet.remix_of.author} />
+          </div>
+          }
       </div>
       <div
         style={{
