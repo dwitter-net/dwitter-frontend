@@ -362,7 +362,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 "btn " +
                 (hasDweetChanged ?  "btn-primary" : "btn-secondary")
               }
-              disabled={ !hasDweetChanged || isEmptyStateDweet}
+              disabled={ !hasDweetChanged || isEmptyStateDweet || [...code].length > 140 }
             >
               Post as Remix
             </button>
