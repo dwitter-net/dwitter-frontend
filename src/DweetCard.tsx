@@ -310,7 +310,8 @@ export const DweetCard: React.FC<Props> = (props) => {
             />
           )}
         </div>
-        {"}"} // {[...code].length}/140
+    {"} //"} <span style={{color: [...code].length > 140 ? "red" : "inherit"}}>
+        {[...code].length}/140</span>
         <div style={{ float: "right" }}>
           <a
             className="no-link-styling"
