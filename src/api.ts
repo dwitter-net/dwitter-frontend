@@ -24,6 +24,16 @@ export interface Dweet {
   comments: DweetComment[];
 }
 
+export interface DweetNotification {
+  id: number;
+  dweet: number;
+  actors: User[];
+  verb: string;
+  read: boolean;
+  timestamp: string;
+}
+
+
 export interface ApiList<T> {
   next: string | null;
   previous: string | null;
@@ -81,6 +91,10 @@ export async function getDweets(
       hashtag
     )}`
   );
+}
+
+export async function getDweetNotificationList(): Promise<ApiList<DweetNotification>> {
+  return get("notifications/");
 }
 
 export async function getDweet(id: number) {

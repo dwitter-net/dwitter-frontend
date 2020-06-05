@@ -21,6 +21,7 @@ import { Dropdown, DropdownToggle, DropdownMenu, Modal } from "reactstrap";
 import { Create } from "./Create";
 import { SingleDweet } from "./SingleDweet";
 import { Settings } from "./Settings";
+import { NotificationList } from "./NotificationList";
 import { LoginForm } from "./LoginForm";
 import { Helmet } from "react-helmet";
 
@@ -390,6 +391,13 @@ function App() {
                 path={"/" + context.user.username + "/settings"}
                 exact={true}
                 component={Settings}
+              />
+            )}
+            {context.user && (
+              <Route
+                path={"/" + context.user.username + "/notifications"}
+                exact={true}
+                component={NotificationList}
               />
             )}
             <Route path="/d/:id" exact={true} component={SingleDweet} />
