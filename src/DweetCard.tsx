@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
 import { Dweet, setLike, addComment } from "./api";
-import { UserView } from "./UserView";
+import { UserView, UserViewRight } from "./UserView";
 import { ReportButton } from "./ReportButton";
 import AceEditor from "react-ace";
 import "ace-builds/src-noconflict/mode-javascript";
@@ -260,8 +260,32 @@ export const DweetCard: React.FC<Props> = (props) => {
           Fullscreen
         </a>
       </div>
-      <div className="mb-3">
-        <UserView user={dweet.author} />
+      <div style={{
+        display:"inline-block",
+          width: "100%",
+      }}>
+        <div className="mb-3" style={{
+          float:"left"
+        }}>
+          <UserView user={dweet.author} />
+        </div>
+          { dweet.remix_of  &&
+          <div className="mb-3" style={{
+            float:"right"
+          }}>
+            {'Remix of '}
+            <Link to={"/d/" + dweet.remix_of.id} className="no-link-color" >
+              <span style={{
+                  opacity:"0.5"
+                }}>
+                  d/
+              </span>
+              {dweet.remix_of.id}
+            </Link>
+            {' by '}
+            <UserViewRight user={dweet.remix_of.author} />
+          </div>
+          }
       </div>
       <div
         style={{

@@ -20,7 +20,7 @@ export interface Dweet {
   link: string;
   awesome_count: number;
   has_user_awesomed: boolean;
-  remix_of: number | null;
+  remix_of: Dweet | null;
   comments: DweetComment[];
 }
 
