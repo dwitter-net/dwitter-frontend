@@ -106,6 +106,7 @@ export const Create: React.FC<RouteComponentProps> = (props) => {
               <button
                 className="btn btn-primary shadow-primary"
                 style={{ flexShrink: 0, marginLeft: 16 }}
+                disabled={[...code].length > 140}
               >
                 Post dweet
               </button>

@@ -127,11 +127,12 @@ export async function reportDweet(dweetId: number) {
   });
 }
 
-export async function postDweet(code: string, comment?: string) {
+export async function postDweet(code: string, comment?: string, remix_of?: number) {
   return post(`dweets/`, {
     data: {
       code,
       "first-comment": comment,
+      "remix_of": remix_of,
     },
   });
 }

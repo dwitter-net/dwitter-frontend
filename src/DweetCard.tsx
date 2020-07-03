@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { Dweet, setLike, addComment } from "./api";
+import { Dweet, setLike, addComment, postDweet } from "./api";
 import { UserView, UserViewRight } from "./UserView";
 import { ReportButton } from "./ReportButton";
 import AceEditor from "react-ace";
@@ -8,11 +8,12 @@ import "ace-builds/src-noconflict/theme-monokai";
 import { Modal } from "reactstrap";
 import Linkify from "react-linkify";
 import { Context } from "./Context";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import hljs from "highlight.js/lib/core";
 import javascriptHLJS from "highlight.js/lib/languages/javascript";
 
 hljs.registerLanguage("js", javascriptHLJS);
+
 
 interface Props {
   dweet: Dweet | null;
@@ -46,6 +47,12 @@ export const DweetCard: React.FC<Props> = (props) => {
   const [updatedDweet, setUpdatedDweet] = useState<Dweet | null>(null);
   const [replyText, setReplyText] = useState("");
   const [originalShouldShowIframe, setShouldShowIframe] = useState(false);
+
+  const [remixText, setRemixText] = useState("");
+  const [hasDweetChanged, setHasDweetChanged] = useState(false);
+  const [hasCodeBeenFocused, setHasCodeBeenFocused] = useState(false);
+
+  const [newDweetRedirect, setNewDweetRedirect] = useState<string | null>(null);
 
   const [context, _] = useContext(Context);
 
@@ -87,6 +94,7 @@ export const DweetCard: React.FC<Props> = (props) => {
   };
 
   const [code, setCode] = useState(dweet?.code || "");
+  const [originalCode, setOriginalCode] = useState(dweet?.code || "");
 
   const shouldStickyFirstComment =
     dweet.comments.length > 0 &&
@@ -309,8 +317,12 @@ export const DweetCard: React.FC<Props> = (props) => {
               value={code}
               mode="javascript"
               theme="monokai"
+              onFocus={() => {
+                setHasCodeBeenFocused(true);
+              }}
               onChange={(code) => {
                 setCode(code);
+                setHasDweetChanged(code != originalCode);
               }}
               style={{
                 width: "100%",
@@ -322,7 +334,8 @@ export const DweetCard: React.FC<Props> = (props) => {
             />
           )}
         </div>
-        {"}"} // {[...code].length}/140
+    {"} //"} <span style={{color: [...code].length > 140 ? "red" : "inherit"}}>
+        {[...code].length}/140</span>
         <div style={{ float: "right" }}>
           <a
             className="no-link-styling"
@@ -330,6 +343,58 @@ export const DweetCard: React.FC<Props> = (props) => {
           >
             {new Date(dweet.posted).toLocaleString()}
           </a>
+        </div>
+        <div>
+      <form
+        style={{ marginTop: 32 }}
+        onSubmit={async (e) => {
+          e.preventDefault();
+          const new_dweet = await postDweet(code, remixText, dweet.id);
+          setNewDweetRedirect("/d/" + new_dweet.id);
+        }}
+      >
+        {newDweetRedirect &&
+           <Redirect to={newDweetRedirect} />
+        }
+        <div
+          className={remixText ? "shadow-primary border-radius" : ""}
+          style={{ position: "relative",
+                    display: hasCodeBeenFocused ? "block" : "none" }}
+        >
+          <input
+            type="text"
+            disabled={isEmptyStateDweet}
+            ref={inputRef}
+            style={{paddingRight: 64,
+                    background: "transparent",
+                    color: "white",
+                    borderColor: "gray",
+                    border: "1px solid",
+                    }}
+            placeholder={hasDweetChanged ? "Add a caption here..." : "Change the code..."}
+            className="form-control"
+            value={remixText}
+            onChange={(e) => setRemixText(e.target.value)}
+          />
+          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0 }}>
+            <button
+              style={{
+                borderTopLeftRadius: 0,
+                borderBottomLeftRadius: 0,
+                ...(isEmptyStateDweet ? { color: "#0000" } : {}),
+              }}
+              className={
+                "btn " +
+                (hasDweetChanged ?  "btn-primary" : "btn-secondary")
+              }
+              disabled={ !hasDweetChanged || isEmptyStateDweet || [...code].length > 140 }
+            >
+              Post as Remix
+            </button>
+          </div>
+        </div>
+      </form>
+
         </div>
       </div>
       {shouldStickyFirstComment && (
@@ -540,3 +605,5 @@ export const DweetCard: React.FC<Props> = (props) => {
     </div>
   );
 };
+
+
