@@ -16,6 +16,8 @@ interface Theme {
   modalBackgroundColor: string;
 }
 
+const darkPrimary = (brightness: number) => `hsl(205, 32%, ${brightness}%)`;
+
 export const themes: { [key: string]: Theme } = {
   light: {
     key: "light",
@@ -34,16 +36,16 @@ export const themes: { [key: string]: Theme } = {
   dark: {
     key: "dark",
     mainTextColor: "#eee",
-    pageBackgroundColor: "#292929",
+    pageBackgroundColor: darkPrimary(10),
     headerBackgroundColor: "#000",
-    mainBackgroundColor: "#151515",
-    secondaryBackgroundColor: "#000",
+    mainBackgroundColor: darkPrimary(18),
+    secondaryBackgroundColor: darkPrimary(13),
     secondaryTextColor: "#888",
-    secondaryBorderColor: "#333",
-    codeEditorBackgroundColor: "#000",
+    secondaryBorderColor: darkPrimary(13),
+    codeEditorBackgroundColor: darkPrimary(13),
     focusedTextInputBackgroundColor: "#222",
     focusedTextInputTextColor: "#fff",
-    modalBackgroundColor: "#292929",
+    modalBackgroundColor: darkPrimary(10),
   },
 };
 
