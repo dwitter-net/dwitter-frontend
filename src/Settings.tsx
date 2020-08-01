@@ -1,11 +1,12 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import { RouteComponentProps } from "react-router-dom";
 import { UserView } from "./UserView";
 import { Helmet } from "react-helmet";
 import { Context, pageMaxWidth, themes } from "./Context";
+import { SetEmailForm } from "./SetEmailForm";
+import { SetPasswordForm } from "./SetPasswordForm";
 
-export const Settings: React.FC<RouteComponentProps> = (props) => {
-  const [email, setEmail] = useState("");
+export const Settings: React.FC<RouteComponentProps> = () => {
   const [context, setContext] = useContext(Context);
 
   return (
@@ -29,15 +30,10 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
             </a>
             .
           </p>
-          <label htmlFor="email">Email address</label>
-          <input
-            id="email"
-            name="email"
-            type="text"
-            className="form-control"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-          />
+        </div>
+
+        <div className="card p-3 mt-3">
+          <SetEmailForm />
         </div>
 
         <div className="card p-3 mt-3">
@@ -81,6 +77,10 @@ export const Settings: React.FC<RouteComponentProps> = (props) => {
               </label>
             </div>
           ))}
+        </div>
+
+        <div className="card p-3 mt-3">
+          <SetPasswordForm />
         </div>
       </div>
     </div>

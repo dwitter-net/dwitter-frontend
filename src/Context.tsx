@@ -1,5 +1,5 @@
 import React from "react";
-import { User } from "./api";
+import { LoggedInUser } from "./api";
 
 interface Theme {
   key: string;
@@ -53,7 +53,7 @@ export const pageMaxWidth = 600 + 32;
 
 export interface AppContext {
   theme: Theme;
-  user: User | null;
+  user: LoggedInUser | null;
   requireLogin: (options: {
     reason: string;
     nextAction: string;
