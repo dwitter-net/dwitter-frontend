@@ -93,7 +93,9 @@ export const DweetCard: React.FC<Props> = (props) => {
     remix_of: null,
   };
 
-  const [code, setCode] = useState(dweet?.code || "");
+  // Replace on existing dweets CR LF with LF on existing dweets because
+  // otherwise the character counter displays extra characters
+  const [code, setCode] = useState(dweet?.code.replace(/\r\n/g, "\n") || "");
   const [originalCode, setOriginalCode] = useState(dweet?.code || "");
 
   const shouldStickyFirstComment =
@@ -321,6 +323,9 @@ export const DweetCard: React.FC<Props> = (props) => {
                 setHasCodeBeenFocused(true);
               }}
               onChange={(code) => {
+                // Prevent user from entering CR LF with LF because otherwise the character
+                // counter displays extra characters
+                code = code.replace(/\r\n/g, "\n");
                 setCode(code);
                 setHasDweetChanged(code != originalCode);
               }}
