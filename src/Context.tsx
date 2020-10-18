@@ -49,6 +49,7 @@ export const themes: { [key: string]: Theme } = {
   },
 };
 
+export const topBarMaxWidth = 960;
 export const pageMaxWidth = 600 + 32;
 
 export interface AppContext {

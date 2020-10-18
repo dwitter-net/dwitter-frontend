@@ -15,7 +15,7 @@ import {
 import { Feed } from "./Feed";
 import { Login } from "./Login";
 import { UserView } from "./UserView";
-import { AppContext, Context, pageMaxWidth, themes } from "./Context";
+import { AppContext, Context, topBarMaxWidth, themes } from "./Context";
 import { About } from "./About";
 import { Dropdown, DropdownToggle, DropdownMenu, Modal } from "reactstrap";
 import { Create } from "./Create";
@@ -252,7 +252,7 @@ function App() {
           <header>
             <div
               style={{
-                maxWidth: pageMaxWidth,
+                maxWidth: topBarMaxWidth,
                 paddingLeft: 16,
                 paddingRight: 16,
                 display: "flex",
@@ -314,6 +314,12 @@ function App() {
                 ))}
               </div>
               <div style={{ flex: 1 }} />
+              <div className="create-new-dweet">
+                <NavLink to="/create">
+                  <span className="add-icon">+</span>
+                  <span className="create-new-dweet-label">New <span className="create-dweet-label">dweet</span></span>
+                </NavLink>
+              </div>
               {context.user ? (
                 <Dropdown
                   isOpen={isUserMenuDropdownOpen}
