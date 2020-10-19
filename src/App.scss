@@ -40,6 +40,53 @@ body {
   color: var(--mainTextColor);
 }
 
+.create-new-dweet a {
+    background-color: #4599ca;
+    color: white;
+    font-size: 1.1em;
+    cursor: pointer;
+    font-weight: bold;
+    padding: 10px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.2);
+    border-radius: 5px;
+    line-height: 1rem;
+    margin-right: 10px;
+    display: block;
+}
+
+.create-new-dweet:hover {
+    text-decoration: underline;
+}
+
+.add-icon {
+    background: white;
+    color: #4599ca;
+    border-radius: 50%;
+    font-weight: 900;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    margin-right: 10px;
+}
+
+@media (max-width: 660px) {
+    .create-new-dweet-label {
+        display: none;
+    }
+}
+
+@media (max-width: 720px) {
+    .create-dweet-label {
+        display: none;
+    }
+}
+
+@media (max-width: 660px) {
+    .add-icon {
+        margin: 0;
+    }
+}
+
 input.form-control,
 input.form-control[readonly] {
     background: var(--secondaryBackgroundColor);
