@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useRef } from "react";
 import AceEditor from "react-ace";
-import { RouteComponentProps } from "react-router-dom";
+import { RouteComponentProps, NavLink } from "react-router-dom";
 import { postDweet } from "./api";
 
 const defaultDweet = `c.width=1920 // clear the canvas
@@ -92,6 +92,8 @@ export const Create: React.FC<RouteComponentProps> = (props) => {
                 props.history.push("/d/" + dweet.id);
               }}
             >
+              {localStorage.getItem("user") ? (
+              <>
               <div style={{ flex: 1 }}>
                 <label htmlFor="title">Title</label>
                 <input
@@ -110,6 +112,12 @@ export const Create: React.FC<RouteComponentProps> = (props) => {
               >
                 Post dweet
               </button>
+              </>) : (
+                <p>
+                  Please <NavLink to="/accounts/login">log in</NavLink> (or <NavLink to="/accounts/register">register</NavLink>) to post a dweet.<br/>
+                  Copy-paste the code somewhere safe to save it meanwhile.
+                </p>
+              )}
             </form>
           </div>
         </div>
