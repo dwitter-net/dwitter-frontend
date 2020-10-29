@@ -79,14 +79,26 @@ export async function getDweets(
   order_by: string,
   hashtag: string,
   username: string,
-  page: number
+  page: number,
+  period: "week" | "month" | "year" | "all"
 ): Promise<ApiList<Dweet>> {
+  const now = new Date();
+  let posted_after = "";
+  if (period === "week") {
+    posted_after = new Date(+now - 7 * 24 * 60 * 60 * 1000).toISOString();
+  }
+  if (period === "month") {
+    posted_after = new Date(+now - 30 * 24 * 60 * 60 * 1000).toISOString();
+  }
+  if (period === "year") {
+    posted_after = new Date(+now - 365 * 24 * 60 * 60 * 1000).toISOString();
+  }
   return get(
     `dweets/?offset=${page * 10}&username=${encodeURIComponent(
       username
     )}&order_by=${encodeURIComponent(order_by)}&hashtag=${encodeURIComponent(
       hashtag
-    )}`
+    )}&posted_after=${encodeURIComponent(posted_after)}`
   );
 }
 
@@ -138,12 +150,16 @@ export async function reportDweet(dweetId: number) {
   });
 }
 
-export async function postDweet(code: string, comment?: string, remix_of?: number) {
+export async function postDweet(
+  code: string,
+  comment?: string,
+  remix_of?: number
+) {
   return post(`dweets/`, {
     data: {
       code,
       "first-comment": comment,
-      "remix_of": remix_of,
+      remix_of: remix_of,
     },
   });
 }

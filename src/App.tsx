@@ -11,8 +11,9 @@ import {
   NavLink,
   Link,
   RouteComponentProps,
+  useLocation,
 } from "react-router-dom";
-import { Feed } from "./Feed";
+import { Feed, FeedProps } from "./Feed";
 import { Login } from "./Login";
 import { UserView } from "./UserView";
 import { AppContext, Context, topBarMaxWidth, themes } from "./Context";
@@ -23,18 +24,19 @@ import { SingleDweet } from "./SingleDweet";
 import { Settings } from "./Settings";
 import { LoginForm } from "./LoginForm";
 import { Helmet } from "react-helmet";
+import { Header } from "./Header";
 
 const NewFeed = (props: RouteComponentProps) => (
-  <Feed name="New dweets" order_by="-posted" {...props} />
+  <Feed name="New dweets" order_by="-posted" period="all" {...props} />
 );
 
 const RandomFeed = (props: RouteComponentProps) => (
-  <Feed name="Random dweets" order_by="?" {...props} />
+  <Feed name="Random dweets" order_by="?" period="all" {...props} />
 );
 
-const TopFeed = (props: RouteComponentProps) => (
-  <Feed name="Top dweets" order_by="-awesome_count" {...props} />
-);
+const TopFeed = (
+  props: RouteComponentProps & { period: FeedProps["period"] }
+) => <Feed name="Top dweets" order_by="-awesome_count" {...props} />;
 
 const HotFeed = (props: RouteComponentProps) => (
   <Feed name="Hot dweets" order_by="-hotness" {...props} />
@@ -175,41 +177,6 @@ function App() {
     },
   });
 
-  const [isUserMenuDropdownOpen, setIsUserMenuDropdownOpen] = useState(false);
-  const [isMobileNavMenuOpen, setIsMobileNavMenuOpen] = useState(false);
-
-  const menu = [
-    {
-      name: "hot",
-      to: "/",
-      width: 48,
-    },
-    {
-      name: "new",
-      to: "/new",
-      width: 48,
-    },
-    {
-      name: "top",
-      to: "/top",
-      width: 48,
-    },
-    {
-      name: "random",
-      to: "/random",
-      width: 80,
-    },
-    {
-      name: "about",
-      to: "/about",
-      width: 80,
-    },
-  ];
-
-  const collapsedMenuItem = menu.find(
-    (item) => item.to === window.location.pathname
-  ) || { name: "menu", to: "/" };
-
   const faviconFolder = "/favicon-" + context.theme.key + "/";
 
   return (
@@ -249,141 +216,7 @@ function App() {
               href={faviconFolder + "favicon-16x16.png"}
             />
           </Helmet>
-          <header>
-            <div
-              style={{
-                maxWidth: topBarMaxWidth,
-                paddingLeft: 16,
-                paddingRight: 16,
-                display: "flex",
-                alignItems: "center",
-                flex: 1,
-                textAlign: "center",
-              }}
-            >
-              <div style={{ marginRight: 32 }}>
-                <a href="/" className="no-link-styling">
-                  Dwitter.net
-                </a>
-              </div>
-              <div className="d-flex d-sm-none">
-                <Dropdown
-                  isOpen={isMobileNavMenuOpen}
-                  toggle={() => setIsMobileNavMenuOpen(!isMobileNavMenuOpen)}
-                >
-                  <DropdownToggle caret={true}>
-                    <NavLink
-                      to={collapsedMenuItem.to}
-                      exact={true}
-                      style={{
-                        pointerEvents: "none",
-                        display: "inline-block",
-                        marginRight: 8,
-                      }}
-                      activeStyle={{
-                        fontWeight: "bold",
-                      }}
-                    >
-                      {collapsedMenuItem.name}
-                    </NavLink>
-                  </DropdownToggle>
-                  <DropdownMenu>
-                    {menu.map((item) => (
-                      <Link
-                        className="dropdown-item"
-                        to={item.to}
-                        onClick={() => setIsMobileNavMenuOpen(false)}
-                      >
-                        {item.name}
-                      </Link>
-                    ))}
-                  </DropdownMenu>
-                </Dropdown>
-              </div>
-              <div className="d-none d-sm-flex">
-                {menu.map((item) => (
-                  <NavLink
-                    key={item.name}
-                    to={item.to}
-                    exact={true}
-                    style={{ width: item.width }}
-                    activeStyle={{ fontWeight: "bold" }}
-                  >
-                    {item.name}
-                  </NavLink>
-                ))}
-              </div>
-              <div style={{ flex: 1 }} />
-              <div className="create-new-dweet">
-                <NavLink to="/create">
-                  <span className="add-icon">+</span>
-                  <span className="create-new-dweet-label">New <span className="create-dweet-label">dweet</span></span>
-                </NavLink>
-              </div>
-              {context.user ? (
-                <Dropdown
-                  isOpen={isUserMenuDropdownOpen}
-                  toggle={() =>
-                    setIsUserMenuDropdownOpen(!isUserMenuDropdownOpen)
-                  }
-                  style={{ marginRight: -16 }}
-                >
-                  <DropdownToggle
-                    style={{
-                      paddingLeft: 16,
-                      paddingRight: 16,
-                    }}
-                  >
-                    <UserView user={context.user} link={false} />
-                  </DropdownToggle>
-                  <DropdownMenu className="right">
-                    <Link
-                      className="dropdown-item"
-                      to={"/u/" + context.user.username + "/top"}
-                      onClick={() => {
-                        setIsUserMenuDropdownOpen(false);
-                      }}
-                    >
-                      My dweets
-                    </Link>
-                    <Link
-                      className="dropdown-item"
-                      to={"/" + context.user.username + "/settings"}
-                      onClick={() => {
-                        setIsUserMenuDropdownOpen(false);
-                      }}
-                    >
-                      Settings
-                    </Link>
-                    <div
-                      style={{
-                        height: 1,
-                        background: context.theme.secondaryBorderColor,
-                        marginTop: 8,
-                        marginBottom: 8,
-                      }}
-                    />
-                    <Link
-                      className="dropdown-item"
-                      to={"/"}
-                      onClick={(e) => {
-                        e.preventDefault();
-                        localStorage.removeItem("token");
-                        localStorage.removeItem("user");
-                        window.location.href = "/";
-                      }}
-                    >
-                      Log out
-                    </Link>
-                  </DropdownMenu>
-                </Dropdown>
-              ) : (
-                <NavLink to="/accounts/login" exact={true}>
-                  Log in
-                </NavLink>
-              )}
-            </div>
-          </header>
+          <Header />
           <Switch>
             <Route
               path="/accounts/login/"
@@ -400,7 +233,34 @@ function App() {
             )}
             <Route path="/d/:id" exact={true} component={SingleDweet} />
             <Route path="/new" exact={true} component={NewFeed} />
-            <Route path="/top" exact={true} component={TopFeed} />
+            <Route
+              path="/top/week"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <TopFeed period="week" {...props} />
+              )}
+            />
+            <Route
+              path="/top/month"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <TopFeed period="month" {...props} />
+              )}
+            />
+            <Route
+              path="/top/year"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <TopFeed period="year" {...props} />
+              )}
+            />
+            <Route
+              path="/top/all"
+              exact={true}
+              component={(props: RouteComponentProps) => (
+                <TopFeed period="all" {...props} />
+              )}
+            />
             <Route path="/random" exact={true} component={RandomFeed} />
             <Route
               path="/h/:hashtag/top"
