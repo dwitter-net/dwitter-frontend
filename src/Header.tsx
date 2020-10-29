@@ -197,8 +197,10 @@ export const Header: React.FC<{}> = (props) => {
         </div>
         <div style={{ flex: 1 }} />
         <div className="create-new-dweet">
-          <NavLink to="/create">
-            <span className="add-icon">+</span>
+          <NavLink 
+            to="/create"
+            className="btn btn-primary d-flex align-items-center justify-content-center"
+          >
             <span className="create-new-dweet-label">
               New <span className="create-dweet-label">dweet</span>
             </span>
