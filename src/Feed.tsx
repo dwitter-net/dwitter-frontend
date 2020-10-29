@@ -6,13 +6,14 @@ import { Context } from "./Context";
 import { Helmet } from "react-helmet";
 import { pageMaxWidth } from "./Context";
 
-interface Props {
+export interface FeedProps {
   order_by: string;
   name: string;
+  period?: "week" | "month" | "year" | "all";
 }
 
 export const Feed: React.FC<
-  Props & RouteComponentProps<{ hashtag?: string; username?: string }>
+  FeedProps & RouteComponentProps<{ hashtag?: string; username?: string }>
 > = (props) => {
   const [dweets, setDweets] = useState<Dweet[][]>([]);
   const pageState = useRef({ current: 0, target: 0 });
@@ -42,14 +43,27 @@ export const Feed: React.FC<
   }, [infiniteScrollSensorDiv]);
 
   useEffect(() => {
-    getDweets(props.order_by, hashtag, username, page).then((data) => {
+    getDweets(
+      props.order_by,
+      hashtag,
+      username,
+      page,
+      props.period || "all"
+    ).then((data) => {
       pageState.current.current = page;
       setDweets((dweets) => {
         dweets[page] = data.results;
         return dweets.slice();
       });
     });
-  }, [hashtag, page, props.order_by, username]);
+  }, [
+    hashtag,
+    page,
+    props.order_by,
+    username,
+    props.period,
+    props.history.length,
+  ]);
 
   const pathRoot = hashtag ? "/h/" + hashtag : "/u/" + username;
 
