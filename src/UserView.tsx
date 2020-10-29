@@ -1,4 +1,4 @@
-import React from "react";
+import React, { CSSProperties } from "react";
 import { User } from "./api";
 import { Link } from "react-router-dom";
 
@@ -19,6 +19,13 @@ function avatar(user: User, right: boolean) {
 }
 
 export const UserView: React.FC<{ user: User; link?: boolean }> = (props) => {
+  const style: CSSProperties = {
+    fontWeight: "bold",
+    overflow: "hidden",
+    whiteSpace: "nowrap",
+    textOverflow: "ellipsis",
+    maxWidth: 256 - 32,
+  };
   return (
     <div
       style={{
@@ -30,10 +37,10 @@ export const UserView: React.FC<{ user: User; link?: boolean }> = (props) => {
 
       {props.link !== false ? (
         <Link to={"/u/" + props.user.username} className="no-link-color">
-          <div style={{ fontWeight: "bold" }}>{props.user.username}</div>
+          <div style={style}>{props.user.username}</div>
         </Link>
       ) : (
-        <div style={{ fontWeight: "bold" }}>{props.user.username}</div>
+        <div style={style}>{props.user.username}</div>
       )}
     </div>
   );
