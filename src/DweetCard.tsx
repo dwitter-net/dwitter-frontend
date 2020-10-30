@@ -545,7 +545,30 @@ export const DweetCard: React.FC<Props> = (props) => {
         }
 
         return (
-          <div key={comment.id} style={{ marginTop: 16 }}>
+          <div
+            key={comment.id}
+            style={{ marginTop: 16 }}
+            className="hover-parent"
+          >
+            <div
+              className="hover-parent"
+              style={{
+                float: 'right',
+                padding: '2px 8px',
+                fontSize: 10,
+                borderRadius: 4,
+                background: '#f5f5f5',
+                alignItems: 'center',
+                justifyContent: 'center',
+              }}
+            >
+              <div className="show-on-parent-hover">
+                <ReportButton
+                  commentId={comment.id}
+                  isEmptyStateDweet={isEmptyStateDweet}
+                />
+              </div>
+            </div>
             <UserView user={comment.author} />
             <div style={{ marginLeft: 32 + 16 }}>
               {parts.map((part, partKey) =>
@@ -603,7 +626,7 @@ export const DweetCard: React.FC<Props> = (props) => {
             setReplyText('');
             inputRef.current?.blur();
           } catch (e) {
-            alert(JSON.stringify(e));
+            alert('Error posting comment');
           }
         }}
       >

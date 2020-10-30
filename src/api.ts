@@ -1,4 +1,4 @@
-import { create } from "domain";
+import { create } from 'domain';
 
 export interface User {
   id: number;
@@ -128,13 +128,20 @@ export async function login(
   return post('api-token-auth/', { data: { username, password } });
 }
 
-export async function register (
+export async function register(
   username: string,
   email: string,
   password: string,
   password2: string
-  ){
-    return post('users/', { data: { username:username, email:email, password:password, password2:password2}});
+) {
+  return post('users/', {
+    data: {
+      username: username,
+      email: email,
+      password: password,
+      password2: password2,
+    },
+  });
 }
 
 export async function getLoggedInUser(): Promise<LoggedInUser> {
@@ -151,13 +158,19 @@ export async function addComment(
 ): Promise<Dweet> {
   return post(`dweets/${dweetId}/add_comment/`, {
     data: {
-      text,
+      text: text,
     },
   });
 }
 
 export async function reportDweet(dweetId: number) {
   return post(`dweets/${dweetId}/report/`, {
+    data: {},
+  });
+}
+
+export async function reportComment(commentId: number) {
+  return post(`comments/${commentId}/report/`, {
     data: {},
   });
 }
