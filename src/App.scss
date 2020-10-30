@@ -230,3 +230,11 @@ a.no-link-color {
         }
     }
 }
+
+.show-on-parent-hover {
+    display: none;
+}
+
+.hover-parent:hover .show-on-parent-hover {
+    display: flex;
+}
