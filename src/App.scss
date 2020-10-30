@@ -206,3 +206,11 @@ header button {
 a.no-link-color {
     color: inherit;
 }
+
+.show-on-parent-hover {
+    display: none;
+}
+
+.hover-parent:hover .show-on-parent-hover {
+    display: flex;
+}

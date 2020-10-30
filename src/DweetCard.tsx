@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from "react";
-import { Dweet, setLike, addComment, postDweet } from "./api";
+import { Dweet, setLike, addComment, postDweet, reportDweet } from "./api";
 import { UserView, UserViewRight } from "./UserView";
 import { ReportButton } from "./ReportButton";
 import AceEditor from "react-ace";
@@ -13,7 +13,6 @@ import hljs from "highlight.js/lib/core";
 import javascriptHLJS from "highlight.js/lib/languages/javascript";
 
 hljs.registerLanguage("js", javascriptHLJS);
-
 
 interface Props {
   dweet: Dweet | null;
@@ -268,32 +267,42 @@ export const DweetCard: React.FC<Props> = (props) => {
           Fullscreen
         </a>
       </div>
-      <div style={{
-        display:"inline-block",
+      <div
+        style={{
+          display: "inline-block",
           width: "100%",
-      }}>
-        <div className="mb-3" style={{
-          float:"left"
-        }}>
+        }}
+      >
+        <div
+          className="mb-3"
+          style={{
+            float: "left",
+          }}
+        >
           <UserView user={dweet.author} />
         </div>
-          { dweet.remix_of  &&
-          <div className="mb-3" style={{
-            float:"right"
-          }}>
-            {'Remix of '}
-            <Link to={"/d/" + dweet.remix_of.id} className="no-link-color" >
-              <span style={{
-                  opacity:"0.5"
-                }}>
-                  d/
+        {dweet.remix_of && (
+          <div
+            className="mb-3"
+            style={{
+              float: "right",
+            }}
+          >
+            {"Remix of "}
+            <Link to={"/d/" + dweet.remix_of.id} className="no-link-color">
+              <span
+                style={{
+                  opacity: "0.5",
+                }}
+              >
+                d/
               </span>
               {dweet.remix_of.id}
             </Link>
-            {' by '}
+            {" by "}
             <UserViewRight user={dweet.remix_of.author} />
           </div>
-          }
+        )}
       </div>
       <div
         style={{
@@ -334,8 +343,10 @@ export const DweetCard: React.FC<Props> = (props) => {
             />
           )}
         </div>
-    {"} //"} <span style={{color: [...code].length > 140 ? "red" : "inherit"}}>
-        {[...code].length}/140</span>
+        {"} //"}{" "}
+        <span style={{ color: [...code].length > 140 ? "red" : "inherit" }}>
+          {[...code].length}/140
+        </span>
         <div style={{ float: "right" }}>
           <a
             className="no-link-styling"
@@ -345,56 +356,65 @@ export const DweetCard: React.FC<Props> = (props) => {
           </a>
         </div>
         <div>
-      <form
-        style={{ marginTop: 32 }}
-        onSubmit={async (e) => {
-          e.preventDefault();
-          const new_dweet = await postDweet(code, remixText, dweet.id);
-          setNewDweetRedirect("/d/" + new_dweet.id);
-        }}
-      >
-        {newDweetRedirect &&
-           <Redirect to={newDweetRedirect} />
-        }
-        <div
-          className={remixText ? "shadow-primary border-radius" : ""}
-          style={{ position: "relative",
-                    display: hasCodeBeenFocused ? "block" : "none" }}
-        >
-          <input
-            type="text"
-            disabled={isEmptyStateDweet}
-            ref={inputRef}
-            style={{paddingRight: 64,
-                    background: "transparent",
-                    color: "white",
-                    borderColor: "gray",
-                    border: "1px solid",
-                    }}
-            placeholder={hasDweetChanged ? "Add a caption here..." : "Change the code..."}
-            className="form-control"
-            value={remixText}
-            onChange={(e) => setRemixText(e.target.value)}
-          />
-          <div style={{ position: "absolute", right: 0, top: 0, bottom: 0 }}>
-            <button
+          <form
+            style={{ marginTop: 32 }}
+            onSubmit={async (e) => {
+              e.preventDefault();
+              const new_dweet = await postDweet(code, remixText, dweet.id);
+              setNewDweetRedirect("/d/" + new_dweet.id);
+            }}
+          >
+            {newDweetRedirect && <Redirect to={newDweetRedirect} />}
+            <div
+              className={remixText ? "shadow-primary border-radius" : ""}
               style={{
-                borderTopLeftRadius: 0,
-                borderBottomLeftRadius: 0,
-                ...(isEmptyStateDweet ? { color: "#0000" } : {}),
+                position: "relative",
+                display: hasCodeBeenFocused ? "block" : "none",
               }}
-              className={
-                "btn " +
-                (hasDweetChanged ?  "btn-primary" : "btn-secondary")
-              }
-              disabled={ !hasDweetChanged || isEmptyStateDweet || [...code].length > 140 }
             >
-              Post as Remix
-            </button>
-          </div>
-        </div>
-      </form>
-
+              <input
+                type="text"
+                disabled={isEmptyStateDweet}
+                ref={inputRef}
+                style={{
+                  paddingRight: 64,
+                  background: "transparent",
+                  color: "white",
+                  borderColor: "gray",
+                  border: "1px solid",
+                }}
+                placeholder={
+                  hasDweetChanged
+                    ? "Add a caption here..."
+                    : "Change the code..."
+                }
+                className="form-control"
+                value={remixText}
+                onChange={(e) => setRemixText(e.target.value)}
+              />
+              <div
+                style={{ position: "absolute", right: 0, top: 0, bottom: 0 }}
+              >
+                <button
+                  style={{
+                    borderTopLeftRadius: 0,
+                    borderBottomLeftRadius: 0,
+                    ...(isEmptyStateDweet ? { color: "#0000" } : {}),
+                  }}
+                  className={
+                    "btn " + (hasDweetChanged ? "btn-primary" : "btn-secondary")
+                  }
+                  disabled={
+                    !hasDweetChanged ||
+                    isEmptyStateDweet ||
+                    [...code].length > 140
+                  }
+                >
+                  Post as Remix
+                </button>
+              </div>
+            </div>
+          </form>
         </div>
       </div>
       {shouldStickyFirstComment && (
@@ -462,7 +482,30 @@ export const DweetCard: React.FC<Props> = (props) => {
         }
 
         return (
-          <div key={comment.id} style={{ marginTop: 16 }}>
+          <div
+            key={comment.id}
+            style={{ marginTop: 16 }}
+            className="hover-parent"
+          >
+            <div
+              className="hover-parent"
+              style={{
+                float: "right",
+                padding: "2px 8px",
+                fontSize: 10,
+                borderRadius: 4,
+                background: "#f5f5f5",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div className="show-on-parent-hover">
+                <ReportButton
+                  commentId={comment.id}
+                  isEmptyStateDweet={isEmptyStateDweet}
+                />
+              </div>
+            </div>
             <UserView user={comment.author} />
             <div style={{ marginLeft: 32 + 16 }}>
               {parts.map((part) =>
@@ -605,5 +648,3 @@ export const DweetCard: React.FC<Props> = (props) => {
     </div>
   );
 };
-
-
