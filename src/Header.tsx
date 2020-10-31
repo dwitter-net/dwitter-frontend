@@ -75,6 +75,7 @@ export const Header: React.FC<{}> = (props) => {
           alignItems: "center",
           flex: 1,
           textAlign: "center",
+          whiteSpace: "nowrap"
         }}
       >
         <div style={{ marginRight: 32 }}>
@@ -196,7 +197,7 @@ export const Header: React.FC<{}> = (props) => {
           )}
         </div>
         <div style={{ flex: 1 }} />
-        <div className="create-new-dweet">
+        <div className="create-new-dweet" >
           <NavLink 
             to="/create"
             className="btn btn-primary d-flex align-items-center justify-content-center"
