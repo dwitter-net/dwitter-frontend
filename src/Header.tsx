@@ -289,7 +289,7 @@ export const Header: React.FC<{}> = (props) => {
             </DropdownMenu>
           </Dropdown>
         ) : (
-          <NavLink to="/accounts/login" exact={true}>
+          <NavLink to="/accounts/login" exact={true} style={{marginLeft:15}}>
             Log in
           </NavLink>
         )}
