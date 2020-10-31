@@ -18,13 +18,19 @@ function avatar(user: User, right: boolean) {
   return <img src={user.avatar} alt="" style={style} />;
 }
 
+function username(user: User){
+  return <span style={{ fontWeight: "bold" }} className="username-text">
+            <span style={{ opacity: "0.5" }}>u/</span>
+            {user.username}
+          </span>
+}
+
 export const UserView: React.FC<{ user: User; link?: boolean }> = (props) => {
   const style: CSSProperties = {
     fontWeight: "bold",
     overflow: "hidden",
     whiteSpace: "nowrap",
     textOverflow: "ellipsis",
-    maxWidth: 256 - 32,
   };
   return (
     <div
@@ -37,10 +43,14 @@ export const UserView: React.FC<{ user: User; link?: boolean }> = (props) => {
 
       {props.link !== false ? (
         <Link to={"/u/" + props.user.username} className="no-link-color">
-          <div style={style}>{props.user.username}</div>
+          <div style={style}>
+            { username(props.user) }
+          </div>
         </Link>
       ) : (
-        <div style={style}>{props.user.username}</div>
+        <div style={style}>
+          { username(props.user) }
+        </div>
       )}
     </div>
   );
@@ -50,10 +60,7 @@ export const UserViewRight: React.FC<{ user: User }> = (props) => {
   return (
     <>
       <Link to={"/u/" + props.user.username} className="no-link-color">
-        <span style={{ fontWeight: "bold" }}>
-          <span style={{ opacity: "0.5" }}>u/</span>
-          {props.user.username}
-        </span>
+          { username(props.user) }
       </Link>
       {avatar(props.user, true)}
     </>
