@@ -201,6 +201,7 @@ export const Header: React.FC<{}> = (props) => {
             to="/create"
             className="btn btn-primary d-flex align-items-center justify-content-center"
           >
+            <span className="plus-icon"></span>
             <span className="create-new-dweet-label">
               New <span className="create-dweet-label">dweet</span>
             </span>
