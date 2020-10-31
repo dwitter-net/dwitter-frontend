@@ -94,7 +94,8 @@ export const Header: React.FC<{}> = (props) => {
           alignItems: "center",
           flex: 1,
           textAlign: "center",
-          whiteSpace: "nowrap"
+          whiteSpace: "nowrap",
+          width: "100%"
         }}
       >
         <div style={{ marginRight: 32 }}>
@@ -233,12 +234,14 @@ export const Header: React.FC<{}> = (props) => {
           <Dropdown
             isOpen={isUserMenuDropdownOpen}
             toggle={() => setIsUserMenuDropdownOpen(!isUserMenuDropdownOpen)}
-            style={{ marginRight: -16 }}
+            style={{ marginRight: -16, minWidth: 0 }}
+            className="settings-dropdown"
           >
             <DropdownToggle
               style={{
                 paddingLeft: 16,
                 paddingRight: 16,
+                width: "100%"
               }}
             >
               <UserView user={context.user} link={false} />
