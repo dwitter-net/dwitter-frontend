@@ -95,6 +95,7 @@ export const Header: React.FC<{}> = (props) => {
           flex: 1,
           textAlign: "center",
           whiteSpace: "nowrap",
+          minWidth: 0,
           width: "100%"
         }}
       >
