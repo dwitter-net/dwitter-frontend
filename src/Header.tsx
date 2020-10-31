@@ -60,9 +60,28 @@ export const Header: React.FC<{}> = (props) => {
 
   const location = useLocation();
 
-  const collapsedMenuItem = menu.find(
+
+  // If a subitem is selected, this will point to the parent
+  // i.e. for /top/year this will contain the whole top object
+  const menuSelectedItem = menu.find(
     (item) => item.to === location.pathname
-  ) || { name: "menu", to: "/" };
+       || (item.subitems && item.subitems.find(
+            (subitem) => subitem.to === location.pathname))
+  ) ;
+
+  // And this one will contain "year"
+  const menuSelectedSubitem = menuSelectedItem?.subitems?.find(
+            (subitem) => subitem.to === location.pathname);
+  
+  const menuDefaultItem = { name: "menu", to: "/" };
+
+  const collapsedMenuTo = menuSelectedSubitem && (menuSelectedSubitem.to) // We're in a subitem (i.e. /top/week)
+                        || menuSelectedItem?.to && (menuSelectedItem.to) // We're on a top level page (i.e. /new)
+                        || menuDefaultItem.to; // default
+
+  const collapsedMenuText = menuSelectedSubitem && menuSelectedItem && (menuSelectedItem.name +" | " + menuSelectedSubitem.name) // We're in a subitem (i.e. /top/week)
+                        || menuSelectedItem && (menuSelectedItem.name) // We're on a top level page (i.e. /new)
+                        || menuDefaultItem.name; // default
 
   return (
     <header>
@@ -88,9 +107,9 @@ export const Header: React.FC<{}> = (props) => {
             toggle={() => setIsMobileNavMenuOpen(!isMobileNavMenuOpen)}
           >
             <DropdownToggle caret={true}>
-              {collapsedMenuItem.to && (
+              {menuSelectedItem && (
                 <NavLink
-                  to={collapsedMenuItem.to}
+                  to={collapsedMenuTo}
                   exact={true}
                   style={{
                     pointerEvents: "none",
@@ -101,7 +120,7 @@ export const Header: React.FC<{}> = (props) => {
                     fontWeight: "bold",
                   }}
                 >
-                  {collapsedMenuItem.name}
+                  { collapsedMenuText }
                 </NavLink>
               )}
             </DropdownToggle>
@@ -112,6 +131,7 @@ export const Header: React.FC<{}> = (props) => {
                     className="dropdown-item"
                     to={item.to}
                     onClick={() => setIsMobileNavMenuOpen(false)}
+                    style={{fontWeight: item.to === location.pathname ? "bold" : "normal"}}
                   >
                     {item.name}
                   </Link>
@@ -121,6 +141,7 @@ export const Header: React.FC<{}> = (props) => {
                       className="dropdown-item"
                       to={subitem.to}
                       onClick={() => setIsMobileNavMenuOpen(false)}
+                    style={{fontWeight: subitem.to === location.pathname ? "bold" : "normal"}}
                     >
                       {item.name} | {subitem.name}
                     </Link>
