@@ -1,3 +1,5 @@
+import { create } from "domain";
+
 export interface User {
   id: number;
   username: string;
@@ -123,6 +125,15 @@ export async function login(
   password: string
 ): Promise<{ token: string }> {
   return post("api-token-auth/", { data: { username, password } });
+}
+
+export async function register (
+  username: string,
+  email: string,
+  password: string,
+  password2: string
+  ){
+    return post('users/', { data: { username:username, email:email, password:password, password2:password2}});
 }
 
 export async function getLoggedInUser(): Promise<LoggedInUser> {

@@ -12,6 +12,7 @@ import {
 } from 'react-router-dom';
 import { Feed, FeedProps } from './Feed';
 import { Login } from './Login';
+import { Register } from "./Register";
 import { AppContext, Context, themes } from './Context';
 import { About } from './About';
 import { Modal } from 'reactstrap';
@@ -216,6 +217,11 @@ function App() {
               path="/accounts/login/"
               exact={true}
               component={Login}
+            ></Route>
+            <Route
+              path="/accounts/register/"
+              exact={true}
+              component={Register}
             ></Route>
             <Route path="/create" exact={true} component={Create}></Route>
             {context.user && (

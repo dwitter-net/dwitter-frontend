@@ -1,6 +1,7 @@
-import React, { useState, useContext } from "react";
-import { Context } from "./Context";
-import { login, getLoggedInUser } from "./api";
+import { Link } from 'react-router-dom';
+import React, { useState, useContext } from 'react';
+import { Context } from './Context';
+import { login, getLoggedInUser } from './api';
 
 interface Props {
   onLogin: () => void;
@@ -8,8 +9,8 @@ interface Props {
 }
 
 export const LoginForm = (props: Props) => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState('');
+  const [password, setPassword] = useState('');
   const [, setContext] = useContext(Context);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<{
@@ -23,26 +24,26 @@ export const LoginForm = (props: Props) => {
       noValidate={true}
       className={
         isLoading || (error && !error.non_field_errors?.length)
-          ? "was-validated"
-          : "needs-validation"
+          ? 'was-validated'
+          : 'needs-validation'
       }
       style={{
         maxWidth: 16 * 18,
         flex: 1,
-        display: "flex",
-        flexDirection: "column",
+        display: 'flex',
+        flexDirection: 'column',
       }}
       onSubmit={async (e) => {
         e.preventDefault();
         setIsLoading(true);
         try {
           const data = await login(username, password);
-          localStorage.setItem("token", data.token);
+          localStorage.setItem('token', data.token);
           const user = await getLoggedInUser();
           setContext({ user });
-          localStorage.setItem("user", JSON.stringify(user));
-          setUsername("");
-          setPassword("");
+          localStorage.setItem('user', JSON.stringify(user));
+          setUsername('');
+          setPassword('');
           props.onLogin();
         } catch (e) {
           setError(e);
@@ -95,14 +96,28 @@ export const LoginForm = (props: Props) => {
         <div className="alert alert-danger">{error.non_field_errors}</div>
       )}
 
-      <button
-        className="btn btn-primary mb-3 mt-3 shadow-primary"
-        style={{ alignSelf: "flex-end" }}
-        disabled={isLoading}
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+          alignItems: 'center',
+        }}
       >
-        Log in
-        {props.nextAction && " and " + props.nextAction}
-      </button>
+        <Link
+          className="mb-3 mt-3"
+          to="/accounts/register"
+        >
+          Register
+        </Link>
+        <button
+          className="btn btn-primary mb-3 mt-3 shadow-primary"
+          disabled={isLoading}
+        >
+          Log in
+          {props.nextAction && ' and ' + props.nextAction}
+        </button>
+      </div>
     </form>
   );
 };
