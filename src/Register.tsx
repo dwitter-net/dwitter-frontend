@@ -1,10 +1,11 @@
 import React from 'react';
 import { Redirect, RouteComponentProps } from 'react-router-dom';
-import { LoginForm } from './LoginForm';
 import { Helmet } from 'react-helmet';
 import { pageMaxWidth } from './Context';
+import { RegisterForm } from './RegisterForm';
+import { getLoggedInUser } from './api';
 
-export const Login: React.FC<RouteComponentProps> = (props) => {
+export const Register: React.FC<RouteComponentProps> = (props) => {
   if (localStorage.getItem('user')) {
     return <Redirect to={'/'} />;
   }
@@ -12,7 +13,7 @@ export const Login: React.FC<RouteComponentProps> = (props) => {
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}>
       <Helmet>
-        <title>Log in</title>
+        <title>Register</title>
       </Helmet>
       <div style={{ maxWidth: pageMaxWidth, flex: 1, padding: 16 }}>
         <div
@@ -23,7 +24,7 @@ export const Login: React.FC<RouteComponentProps> = (props) => {
           }}
           className="card p-3"
         >
-          <LoginForm
+          <RegisterForm
             onLogin={() => {
               props.history.push('/');
             }}
