@@ -2,6 +2,7 @@ import React, { useEffect, useState, useRef } from 'react';
 import AceEditor from 'react-ace';
 import { RouteComponentProps, NavLink } from 'react-router-dom';
 import { postDweet } from './api';
+import { getDweetLength } from './utils';
 
 const defaultDweet = `c.width=1920 // clear the canvas
 for(i=0;i<9;i++)
@@ -108,7 +109,7 @@ export const Create: React.FC<RouteComponentProps> = (props) => {
                   <button
                     className="btn btn-primary shadow-primary"
                     style={{ flexShrink: 0, marginLeft: 16 }}
-                    disabled={[...code].length > 140}
+                    disabled={getDweetLength(code) > 140}
                   >
                     Post dweet
                   </button>
