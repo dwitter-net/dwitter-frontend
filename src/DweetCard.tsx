@@ -12,6 +12,7 @@ import { Link, Redirect } from 'react-router-dom';
 import hljs from 'highlight.js/lib/core';
 import javascriptHLJS from 'highlight.js/lib/languages/javascript';
 import Switch from 'react-switch';
+import { getDweetLength } from './utils';
 
 hljs.registerLanguage('js', javascriptHLJS);
 
@@ -392,8 +393,12 @@ export const DweetCard: React.FC<Props> = (props) => {
           )}
         </div>
         {'} //'}{' '}
-        <span style={{ color: [...code].length > 140 ? 'red' : 'inherit' }}>
-          {[...code].length}/140
+        <span
+          style={{
+            color: getDweetLength(code) ? 'red' : 'inherit',
+          }}
+        >
+          {getDweetLength(code)}/140
         </span>
         <div style={{ float: 'right' }}>
           <a
@@ -455,7 +460,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                   disabled={
                     !hasDweetChanged ||
                     isEmptyStateDweet ||
-                    [...code].length > 140
+                    getDweetLength(code) > 140
                   }
                 >
                   Post as Remix
