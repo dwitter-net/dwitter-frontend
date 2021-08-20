@@ -8,17 +8,13 @@ import {
   BrowserRouter as Router,
   Switch,
   Route,
-  NavLink,
-  Link,
   RouteComponentProps,
-  useLocation,
 } from 'react-router-dom';
 import { Feed, FeedProps } from './Feed';
 import { Login } from './Login';
-import { UserView } from './UserView';
-import { AppContext, Context, topBarMaxWidth, themes } from './Context';
+import { AppContext, Context, themes } from './Context';
 import { About } from './About';
-import { Dropdown, DropdownToggle, DropdownMenu, Modal } from 'reactstrap';
+import { Modal } from 'reactstrap';
 import { Create } from './Create';
 import { SingleDweet } from './SingleDweet';
 import { Settings } from './Settings';
@@ -114,7 +110,7 @@ for (const item of [
   },
 ]) {
   linkify.add(item.prefix, {
-    validate: (text: string, pos: number, self: any) => {
+    validate: (text: string, pos: number) => {
       const tail = text.slice(pos);
       if (item.regex.test(tail)) {
         const match = tail.match(item.regex);

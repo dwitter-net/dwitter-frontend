@@ -21,7 +21,7 @@ function avatar(user: User, right: boolean) {
 function username(user: User) {
   return (
     <span style={{ fontWeight: 'bold' }} className="username-text">
-      <span style={{ opacity: '0.5' }}>u/</span>
+      <span style={{ opacity: '0.5', fontWeight: 'normal' }}>u/</span>
       {user.username}
     </span>
   );

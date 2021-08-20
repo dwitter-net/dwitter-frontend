@@ -161,6 +161,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 width: '100%',
                 height: '100%',
                 border: 0,
+                borderRadius: 2,
               }}
             />
           )}
@@ -286,29 +287,13 @@ export const DweetCard: React.FC<Props> = (props) => {
           Fullscreen
         </a>
       </div>
-      <div
-        style={{
-          display: 'inline-block',
-          width: '100%',
-        }}
-      >
-        <div
-          className="mb-3"
-          style={{
-            float: 'left',
-          }}
-        >
-          <UserView user={dweet.author} />
-        </div>
+      <div className="d-flex align-items-center mb-3">
+        <UserView user={dweet.author} />
+        <div style={{ flex: 1 }} />
         {dweet.remix_of && (
-          <div
-            className="mb-3"
-            style={{
-              float: 'right',
-            }}
-          >
-            {'Remix of '}
-            <Link to={'/d/' + dweet.remix_of.id} className="no-link-color">
+          <>
+            <span>Remix of </span>
+            <Link to={'/d/' + dweet.remix_of.id} className="no-link-color mx-2">
               <span
                 style={{
                   opacity: '0.5',
@@ -318,9 +303,9 @@ export const DweetCard: React.FC<Props> = (props) => {
               </span>
               {dweet.remix_of.id}
             </Link>
-            {' by '}
+            <span className="mr-2"> by </span>
             <UserViewRight user={dweet.remix_of.author} />
-          </div>
+          </>
         )}
       </div>
       <div
@@ -372,6 +357,7 @@ export const DweetCard: React.FC<Props> = (props) => {
               wrapEnabled={true}
               showPrintMargin={false}
               highlightActiveLine={false}
+              fontSize={14}
               value={code}
               mode="javascript"
               theme="monokai"
@@ -380,11 +366,11 @@ export const DweetCard: React.FC<Props> = (props) => {
               }}
               onChange={(code) => {
                 setCode(code);
-                setHasDweetChanged(code != originalCode);
+                setHasDweetChanged(code !== originalCode);
               }}
               style={{
                 width: '100%',
-                height: 64,
+                flex: 1,
                 border: 0,
                 background: 'transparent',
                 color: 'white',
