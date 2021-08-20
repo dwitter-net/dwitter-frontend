@@ -1,8 +1,8 @@
-import React, { useState } from "react";
-import "./App.scss";
+import React, { useState } from 'react';
+import './App.scss';
 
 //@ts-ignore
-import { linkify } from "react-linkify";
+import { linkify } from 'react-linkify';
 
 import {
   BrowserRouter as Router,
@@ -12,19 +12,19 @@ import {
   Link,
   RouteComponentProps,
   useLocation,
-} from "react-router-dom";
-import { Feed, FeedProps } from "./Feed";
-import { Login } from "./Login";
-import { UserView } from "./UserView";
-import { AppContext, Context, topBarMaxWidth, themes } from "./Context";
-import { About } from "./About";
-import { Dropdown, DropdownToggle, DropdownMenu, Modal } from "reactstrap";
-import { Create } from "./Create";
-import { SingleDweet } from "./SingleDweet";
-import { Settings } from "./Settings";
-import { LoginForm } from "./LoginForm";
-import { Helmet } from "react-helmet";
-import { Header } from "./Header";
+} from 'react-router-dom';
+import { Feed, FeedProps } from './Feed';
+import { Login } from './Login';
+import { UserView } from './UserView';
+import { AppContext, Context, topBarMaxWidth, themes } from './Context';
+import { About } from './About';
+import { Dropdown, DropdownToggle, DropdownMenu, Modal } from 'reactstrap';
+import { Create } from './Create';
+import { SingleDweet } from './SingleDweet';
+import { Settings } from './Settings';
+import { LoginForm } from './LoginForm';
+import { Helmet } from 'react-helmet';
+import { Header } from './Header';
 
 const NewFeed = (props: RouteComponentProps) => (
   <Feed name="New dweets" order_by="-posted" period="all" {...props} />
@@ -35,7 +35,7 @@ const RandomFeed = (props: RouteComponentProps) => (
 );
 
 const TopFeed = (
-  props: RouteComponentProps & { period: FeedProps["period"] }
+  props: RouteComponentProps & { period: FeedProps['period'] }
 ) => <Feed name="Top dweets" order_by="-awesome_count" {...props} />;
 
 const HotFeed = (props: RouteComponentProps) => (
@@ -44,7 +44,7 @@ const HotFeed = (props: RouteComponentProps) => (
 
 const NewHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
   <Feed
-    name={"New dweets for #" + props.match.params.hashtag}
+    name={'New dweets for #' + props.match.params.hashtag}
     order_by="-posted"
     {...props}
   />
@@ -52,7 +52,7 @@ const NewHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
 
 const TopHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
   <Feed
-    name={"Top dweets for #" + props.match.params.hashtag}
+    name={'Top dweets for #' + props.match.params.hashtag}
     order_by="-awesome_count"
     {...props}
   />
@@ -60,7 +60,7 @@ const TopHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
 
 const HotHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
   <Feed
-    name={"Hot dweets for #" + props.match.params.hashtag}
+    name={'Hot dweets for #' + props.match.params.hashtag}
     order_by="-hotness"
     {...props}
   />
@@ -68,7 +68,7 @@ const HotHashtagFeed = (props: RouteComponentProps<{ hashtag: string }>) => (
 
 const HotUserFeed = (props: RouteComponentProps<{ username: string }>) => (
   <Feed
-    name={"Hot dweets for u/" + props.match.params.username}
+    name={'Hot dweets for u/' + props.match.params.username}
     order_by="-hotness"
     {...props}
   />
@@ -76,7 +76,7 @@ const HotUserFeed = (props: RouteComponentProps<{ username: string }>) => (
 
 const TopUserFeed = (props: RouteComponentProps<{ username: string }>) => (
   <Feed
-    name={"Top dweets for u/" + props.match.params.username}
+    name={'Top dweets for u/' + props.match.params.username}
     order_by="-awesome_count"
     {...props}
   />
@@ -84,7 +84,7 @@ const TopUserFeed = (props: RouteComponentProps<{ username: string }>) => (
 
 const NewUserFeed = (props: RouteComponentProps<{ username: string }>) => (
   <Feed
-    name={"New dweets for u/" + props.match.params.username}
+    name={'New dweets for u/' + props.match.params.username}
     order_by="-posted"
     {...props}
   />
@@ -92,25 +92,25 @@ const NewUserFeed = (props: RouteComponentProps<{ username: string }>) => (
 
 for (const item of [
   {
-    prefix: "d/",
+    prefix: 'd/',
     regex: /[a-zA-Z0-9_]+/,
-    normalize: (match: any) => (match.url = "/" + match.url),
+    normalize: (match: any) => (match.url = '/' + match.url),
   },
   {
-    prefix: "u/",
+    prefix: 'u/',
     regex: /[a-zA-Z0-9_]+/,
-    normalize: (match: any) => (match.url = "/" + match.url),
+    normalize: (match: any) => (match.url = '/' + match.url),
   },
   {
-    prefix: "c/",
+    prefix: 'c/',
     regex: /[a-zA-Z0-9_]+/,
-    normalize: (match: any) => (match.url = "/" + match.url),
+    normalize: (match: any) => (match.url = '/' + match.url),
   },
   {
-    prefix: "#",
+    prefix: '#',
     regex: /[a-zA-Z_][a-zA-Z0-9_-]+/,
     normalize: (match: any) =>
-      (match.url = "/h/" + match.url.slice(1) + "/top"),
+      (match.url = '/h/' + match.url.slice(1) + '/top'),
   },
 ]) {
   linkify.add(item.prefix, {
@@ -137,23 +137,21 @@ interface LoginRequest {
 }
 
 function App() {
-  const [
-    currentLoginRequest,
-    setCurrentLoginRequest,
-  ] = useState<LoginRequest | null>(null);
+  const [currentLoginRequest, setCurrentLoginRequest] =
+    useState<LoginRequest | null>(null);
 
-  let themeMode = localStorage.getItem("themeMode") || "automatic";
-  if (themeMode === "automatic") {
-    themeMode = window.matchMedia("(prefers-colors-scheme: dark)").matches
-      ? "dark"
-      : "light";
+  let themeMode = localStorage.getItem('themeMode') || 'automatic';
+  if (themeMode === 'automatic') {
+    themeMode = window.matchMedia('(prefers-colors-scheme: dark)').matches
+      ? 'dark'
+      : 'light';
   }
 
   const [context, setContext] = useState<AppContext>({
     theme: themes[themeMode],
-    user: JSON.parse(localStorage.getItem("user") || "null"),
+    user: JSON.parse(localStorage.getItem('user') || 'null'),
     requireLogin: async (options: { reason: string; nextAction: string }) => {
-      if (localStorage.getItem("user")) {
+      if (localStorage.getItem('user')) {
         return;
       }
       if (currentLoginRequest) {
@@ -177,7 +175,7 @@ function App() {
     },
   });
 
-  const faviconFolder = "/favicon-" + context.theme.key + "/";
+  const faviconFolder = '/favicon-' + context.theme.key + '/';
 
   return (
     <Context.Provider
@@ -185,8 +183,8 @@ function App() {
     >
       <style>
         {`:root {${Object.entries(context.theme)
-          .map(([key, value]) => "--" + key + ": " + value)
-          .join(";")}}`}
+          .map(([key, value]) => '--' + key + ': ' + value)
+          .join(';')}}`}
       </style>
       <Router>
         <div
@@ -196,24 +194,24 @@ function App() {
             color: context.theme.mainTextColor,
           }}
         >
-          <Helmet titleTemplate={"%s | Dwitter.net"}>
+          <Helmet titleTemplate={'%s | Dwitter.net'}>
             <title>Dwitter.net - Javascript demos in 140 characters</title>
             <link
               rel="apple-touch-icon"
               sizes="180x180"
-              href={faviconFolder + "apple-touch-icon.png"}
+              href={faviconFolder + 'apple-touch-icon.png'}
             />
             <link
               rel="icon"
               type="image/png"
               sizes="32x32"
-              href={faviconFolder + "favicon-32x32.png"}
+              href={faviconFolder + 'favicon-32x32.png'}
             />
             <link
               rel="icon"
               type="image/png"
               sizes="16x16"
-              href={faviconFolder + "favicon-16x16.png"}
+              href={faviconFolder + 'favicon-16x16.png'}
             />
           </Helmet>
           <Header />
@@ -226,7 +224,7 @@ function App() {
             <Route path="/create" exact={true} component={Create}></Route>
             {context.user && (
               <Route
-                path={"/" + context.user.username + "/settings"}
+                path={'/' + context.user.username + '/settings'}
                 exact={true}
                 component={Settings}
               />
