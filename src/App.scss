@@ -1,7 +1,8 @@
 @use "sass:color";
 
 $spacer: 16px;
-
+$enable-shadows: true;
+$enable-gradients: true;
 $border-radius: 4px;
 
 @import "node_modules/bootstrap/scss/bootstrap";

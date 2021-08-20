@@ -105,7 +105,21 @@ export const Header: React.FC<{}> = (props) => {
         }}
       >
         <div style={{ marginRight: 32 }}>
-          <a href="/" className="no-link-styling">
+          <a href="/" className="no-link-styling d-flex align-items-center">
+            <div className="d-flex mr-3">
+              {[4, 4, 0].map((marginRight, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: 6,
+                    height: 23,
+                    marginRight,
+                    background: 'black',
+                    borderRadius: 1,
+                  }}
+                />
+              ))}
+            </div>
             Dwitter.net
           </a>
         </div>
