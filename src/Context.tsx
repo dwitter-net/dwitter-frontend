@@ -14,6 +14,8 @@ interface Theme {
   focusedTextInputBackgroundColor: string;
   focusedTextInputTextColor: string;
   modalBackgroundColor: string;
+  primary: string;
+  switchOffBackgroundColor: string;
 }
 
 const darkPrimary = (brightness: number) => `hsl(205, 32%, ${brightness}%)`;
@@ -32,6 +34,8 @@ export const themes: { [key: string]: Theme } = {
     focusedTextInputBackgroundColor: "#fff",
     focusedTextInputTextColor: "#000",
     modalBackgroundColor: "#fff",
+    primary: "#007bff",
+    switchOffBackgroundColor: "#666",
   },
   dark: {
     key: "dark",
@@ -46,6 +50,8 @@ export const themes: { [key: string]: Theme } = {
     focusedTextInputBackgroundColor: "#222",
     focusedTextInputTextColor: "#fff",
     modalBackgroundColor: darkPrimary(10),
+    primary: "#007bff",
+    switchOffBackgroundColor: "#666",
   },
 };
 
