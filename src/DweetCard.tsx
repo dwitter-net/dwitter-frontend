@@ -11,12 +11,30 @@ import { Context } from './Context';
 import { Link, Redirect } from 'react-router-dom';
 import hljs from 'highlight.js/lib/core';
 import javascriptHLJS from 'highlight.js/lib/languages/javascript';
+import Switch from 'react-switch';
 
 hljs.registerLanguage('js', javascriptHLJS);
 
 interface Props {
   dweet: Dweet | null;
 }
+
+const isCodeCompressed = (code: string) =>
+  code.startsWith('eval(unescape(escape`') &&
+  code.endsWith("`.replace(/u../g,'')))");
+
+const getUncompressedCode = (code: string) =>
+  unescape(escape(code.slice(21, -22)).replace(/u../g, ''));
+
+const getCompressedCode = (code: string) => {
+  let r = '';
+  for (let i = 0; i < code.length; i += 2)
+    r += String.fromCharCode(
+      0xd800 + code.charCodeAt(i),
+      0xdc00 + (code.charCodeAt(i + 1) || 10)
+    );
+  return 'eval(unescape(escape`' + r + "`.replace(/u../g,'')))";
+};
 
 interface HLJSNodeObject {
   kind: string;
@@ -316,7 +334,37 @@ export const DweetCard: React.FC<Props> = (props) => {
         }}
       >
         function u(t){' {'}
-        <div style={{ height: 64 }}>
+        {dweet.id !== -1 &&
+          (isEmptyStateDweet ||
+            isCodeCompressed(originalCode) ||
+            hasCodeBeenFocused) && (
+            <label
+              style={{ float: 'right', margin: 0, cursor: 'pointer' }}
+              className="d-flex align-items-center"
+            >
+              <span className="mr-3">Compressed</span>
+              <Switch
+                onColor={context.theme.primary}
+                offColor={context.theme.switchOffBackgroundColor}
+                height={16}
+                width={40}
+                checkedIcon={<span />}
+                uncheckedIcon={<span />}
+                checked={isCodeCompressed(code)}
+                onChange={() =>
+                  setCode((old) =>
+                    !isCodeCompressed(old)
+                      ? getCompressedCode(old)
+                      : getUncompressedCode(old)
+                  )
+                }
+              />
+            </label>
+          )}
+        <div
+          className="d-flex flex-column"
+          style={{ height: 64 + 16, marginBottom: 16, marginTop: 8 }}
+        >
           {!isEmptyStateDweet && (
             <AceEditor
               showGutter={false}
