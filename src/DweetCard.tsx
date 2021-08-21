@@ -381,7 +381,7 @@ export const DweetCard: React.FC<Props> = (props) => {
         {'} //'}{' '}
         <span
           style={{
-            color: getDweetLength(code) ? 'red' : 'inherit',
+            color: getDweetLength(code) > 140 ? 'red' : 'inherit',
           }}
         >
           {getDweetLength(code)}/140
