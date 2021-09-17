@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
-import { Dweet, setLike, addComment, postDweet } from './api';
+import { Dweet, setLike, addComment, postDweet, getDweet } from './api';
 import { UserView, UserViewRight } from './UserView';
 import { ReportButton } from './ReportButton';
 import AceEditor from 'react-ace';
@@ -92,6 +92,7 @@ export const DweetCard: React.FC<Props> = (props) => {
   }, [iframeContainer, shouldShowIframe]);
 
   const [showShareModal, setShowShareModal] = useState(false);
+  const [showRemixListModal, setShowRemixListModal] = useState(false);
 
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -109,6 +110,7 @@ export const DweetCard: React.FC<Props> = (props) => {
     has_user_awesomed: false,
     comments: [],
     remix_of: null,
+    remixes: [],
   };
 
   const [code, setCode] = useState(dweet?.code || '');
@@ -263,6 +265,26 @@ export const DweetCard: React.FC<Props> = (props) => {
         >
           Share
         </a>
+        {dweet.remixes.length > 0 && (
+          <a
+            href="#"
+            style={{
+              marginLeft: 16,
+              ...(isEmptyStateDweet
+                ? { background: 'var(--blue)', borderRadius: 4, opacity: 0.33 }
+                : {}),
+            }}
+            onClick={(e) => {
+              e.preventDefault();
+              if (isEmptyStateDweet) {
+                return;
+              }
+              setShowRemixListModal(true);
+            }}
+          >
+            {dweet.remixes.length} remixes
+          </a>
+        )}
         <a
           href="#"
           style={{
@@ -619,9 +641,44 @@ export const DweetCard: React.FC<Props> = (props) => {
       </form>
 
       <Modal
+        isOpen={showRemixListModal}
+        toggle={() => setShowRemixListModal(!showRemixListModal)}
+      >
+        <div className="p-3">
+          <div
+            className="mb-3"
+            style={{
+              fontWeight: 'bold',
+              textAlign: 'center',
+              position: 'relative',
+            }}
+          >
+            <a
+              href="#"
+              style={{
+                position: 'absolute',
+                right: 0,
+                top: 0,
+                fontWeight: 'normal',
+              }}
+              onClick={(e) => {
+                e.preventDefault();
+                setShowRemixListModal(false);
+              }}
+            >
+              close
+            </a>
+            Remixes of d/{dweet.id}
+          </div>
+
+          <DweetList dweet_ids={dweet.remixes} />
+        </div>
+      </Modal>
+
+      <Modal
         isOpen={showShareModal}
         keyboard={true}
-        toggle={() => setShowShareModal(!setShowShareModal)}
+        toggle={() => setShowShareModal(!showShareModal)}
       >
         <div className="p-3">
           <div
@@ -667,5 +724,44 @@ export const DweetCard: React.FC<Props> = (props) => {
         </div>
       </Modal>
     </div>
+  );
+};
+
+const DweetList: React.FC<{ dweet_ids: number[] }> = ({ dweet_ids }) => {
+  return (
+    <>
+      {dweet_ids.map((dweet_id) => (
+        <DweetElement dweet_id={dweet_id} />
+      ))}
+    </>
+  );
+};
+
+const DweetElement: React.FC<{ dweet_id: number }> = ({ dweet_id }) => {
+  const [dweet, setDweet] = useState<Dweet | null>(null);
+
+  useEffect(() => {
+    getDweet(dweet_id).then((dweet) => {
+      setDweet(dweet);
+    });
+  }, [dweet_id]); // Only run when dweet_id changes
+
+  return (
+    <>
+      <Link to={'/d/' + dweet_id} className="no-link-color mx-2">
+        <span
+          style={{
+            opacity: '0.5',
+          }}
+        >
+          d/
+        </span>
+        {dweet_id}
+      </Link>
+      <span className="mr-2"> by </span>
+      {dweet && <UserViewRight user={dweet.author} />}
+      {!dweet && <span>...</span>}
+      <br />
+    </>
   );
 };
