@@ -223,11 +223,6 @@ export const DweetCard: React.FC<Props> = (props) => {
                         'You need to log in in order to Awesome this dweet!',
                       nextAction: 'click "Awesome!"',
                     });
-                  } catch {
-                    setIsAwesomeLoading(false);
-                    return;
-                  }
-                  try {
                     const newDweet = await setLike(
                       dweet.id,
                       !dweet.has_user_awesomed
@@ -399,8 +394,18 @@ export const DweetCard: React.FC<Props> = (props) => {
             style={{ marginTop: 32 }}
             onSubmit={async (e) => {
               e.preventDefault();
-              const new_dweet = await postDweet(code, remixText, dweet.id);
-              setNewDweetRedirect('/d/' + new_dweet.id);
+
+              try {
+                await context.requireLogin({
+                  reason:
+                    'You need to be logged in to post dweets. Please log in now and your remix will immediately publish.',
+                  nextAction: 'post remix',
+                });
+                const new_dweet = await postDweet(code, remixText, dweet.id);
+                setNewDweetRedirect('/d/' + new_dweet.id);
+              } catch {
+                console.log('Failed to post remix');
+              }
             }}
           >
             {newDweetRedirect && <Redirect to={newDweetRedirect} />}

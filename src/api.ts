@@ -39,15 +39,15 @@ export interface ApiList<T> {
 }
 
 async function get(path: string) {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   const response = await fetch(process.env.REACT_APP_API_BASE_URL + path, {
     headers: {
-      Accept: "application/json",
-      ...(token ? { Authorization: "token " + token } : {}),
+      Accept: 'application/json',
+      ...(token ? { Authorization: 'token ' + token } : {}),
     },
   });
   if (token && response.status === 401) {
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
   }
   if (!response.ok) {
     throw await response.json();
@@ -56,18 +56,18 @@ async function get(path: string) {
 }
 
 async function post(path: string, options: { data?: any }) {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem('token');
   const response = await fetch(process.env.REACT_APP_API_BASE_URL + path, {
-    method: "post",
+    method: 'post',
     body: JSON.stringify(options.data),
     headers: {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      ...(token ? { Authorization: "token " + token } : {}),
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...(token ? { Authorization: 'token ' + token } : {}),
     },
   });
   if (token && response.status === 401) {
-    localStorage.removeItem("token");
+    localStorage.removeItem('token');
   }
   if (!response.ok) {
     throw await response.json();
@@ -80,17 +80,17 @@ export async function getDweets(
   hashtag: string,
   username: string,
   page: number,
-  period: "week" | "month" | "year" | "all"
+  period: 'week' | 'month' | 'year' | 'all'
 ): Promise<ApiList<Dweet>> {
   const now = new Date();
-  let posted_after = "";
-  if (period === "week") {
+  let posted_after = '';
+  if (period === 'week') {
     posted_after = new Date(+now - 7 * 24 * 60 * 60 * 1000).toISOString();
   }
-  if (period === "month") {
+  if (period === 'month') {
     posted_after = new Date(+now - 30 * 24 * 60 * 60 * 1000).toISOString();
   }
-  if (period === "year") {
+  if (period === 'year') {
     posted_after = new Date(+now - 365 * 24 * 60 * 60 * 1000).toISOString();
   }
   return get(
@@ -103,11 +103,11 @@ export async function getDweets(
 }
 
 export async function getDweet(id: number) {
-  return get("dweets/" + id + "/");
+  return get('dweets/' + id + '/');
 }
 
 export async function getComments(id: number): Promise<ApiList<DweetComment>> {
-  return get("comments/?page_size=999999&reply_to=" + id);
+  return get('comments/?page_size=999999&reply_to=' + id);
 }
 
 export async function setLike(id: number, like: boolean): Promise<Dweet> {
@@ -122,15 +122,15 @@ export async function login(
   username: string,
   password: string
 ): Promise<{ token: string }> {
-  return post("api-token-auth/", { data: { username, password } });
+  return post('api-token-auth/', { data: { username, password } });
 }
 
 export async function getLoggedInUser(): Promise<LoggedInUser> {
-  return get("users/me/");
+  return get('users/me/');
 }
 
 export async function getUser(id: string): Promise<User> {
-  return get("users/" + id + "/");
+  return get('users/' + id + '/');
 }
 
 export async function addComment(
@@ -158,7 +158,7 @@ export async function postDweet(
   return post(`dweets/`, {
     data: {
       code,
-      "first-comment": comment,
+      'first-comment': comment,
       remix_of: remix_of,
     },
   });
