@@ -29,6 +29,7 @@ export interface Dweet {
   has_user_awesomed: boolean;
   remix_of: Dweet | null;
   comments: DweetComment[];
+  remixes: number[];
 }
 
 export interface ApiList<T> {
@@ -102,7 +103,7 @@ export async function getDweets(
   );
 }
 
-export async function getDweet(id: number) {
+export async function getDweet(id: number): Promise<Dweet> {
   return get('dweets/' + id + '/');
 }
 
