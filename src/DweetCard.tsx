@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useContext, useCallback, useMemo } from 'react';
 import { Dweet, setLike, addComment, postDweet, getDweet } from './api';
 import { UserView, UserViewRight } from './UserView';
 import { ReportButton } from './ReportButton';
@@ -20,22 +20,24 @@ interface Props {
   dweet: Dweet | null;
 }
 
+const compressionIncipit = 'eval(unescape(escape';
+const compressionTail = '.replace(/u';
+
 const isCodeCompressed = (code: string) =>
-  code.startsWith('eval(unescape(escape`') &&
-  code.endsWith("`.replace(/u../g,'')))");
+  code.lastIndexOf(compressionIncipit) !== -1 &&
+  code.lastIndexOf(compressionTail) !== -1;
 
 const getUncompressedCode = (code: string) =>
-  unescape(escape(code.slice(21, -22)).replace(/u../g, ''));
-
-const getCompressedCode = (code: string) => {
-  let r = '';
-  for (let i = 0; i < code.length; i += 2)
-    r += String.fromCharCode(
-      0xd800 + code.charCodeAt(i),
-      0xdc00 + (code.charCodeAt(i + 1) || 10)
-    );
-  return 'eval(unescape(escape`' + r + "`.replace(/u../g,'')))";
-};
+  code.slice(0, code.lastIndexOf(compressionIncipit)) +
+  unescape(
+    escape(
+      code.slice(
+        code.lastIndexOf(compressionIncipit) + 21,
+        code.lastIndexOf(compressionTail) - 1
+      )
+    ).replace(/u../g, '')
+  ) +
+  code.slice(code.lastIndexOf(compressionTail) + 20, code.length - 1);
 
 interface HLJSNodeObject {
   kind: string;
@@ -114,7 +116,9 @@ export const DweetCard: React.FC<Props> = (props) => {
   };
 
   const [code, setCode] = useState(dweet?.code || '');
-  const [originalCode, setOriginalCode] = useState(dweet?.code || '');
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const originalCode = useMemo(() => dweet?.code || '', []);
+  const isOriginalCodeCompressed = useMemo(() => isCodeCompressed(originalCode), [originalCode]);
 
   const shouldStickyFirstComment =
     dweet.comments.length > 0 &&
@@ -125,6 +129,22 @@ export const DweetCard: React.FC<Props> = (props) => {
   const comments = shouldCollapseComments
     ? dweet.comments.slice(dweet.comments.length - 5)
     : dweet.comments;
+
+  
+  const getCompressedCode = useCallback(() => {
+    if (isOriginalCodeCompressed && !hasDweetChanged) {
+      // if the dweet has not been edited, recover original compressed code
+      return originalCode;
+    }
+
+    let r = '';
+    for (let i = 0; i < code.length; i += 2)
+      r += String.fromCharCode(
+        0xd800 + code.charCodeAt(i),
+        0xdc00 + (code.charCodeAt(i + 1) || 10)
+      );
+    return 'eval(unescape(escape`' + r + "`.replace(/u../g,'')))";
+  }, [code, originalCode, hasDweetChanged, isOriginalCodeCompressed]);
 
   return (
     <div className="card p-3 mb-3">
@@ -356,9 +376,9 @@ export const DweetCard: React.FC<Props> = (props) => {
                 checked={isCodeCompressed(code)}
                 onChange={() =>
                   setCode((old) =>
-                    !isCodeCompressed(old)
-                      ? getCompressedCode(old)
-                      : getUncompressedCode(old)
+                    isCodeCompressed(old)
+                      ? getUncompressedCode(old)
+                      : getCompressedCode()
                   )
                 }
               />
