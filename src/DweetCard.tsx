@@ -513,7 +513,7 @@ export const DweetCard: React.FC<Props> = (props) => {
           </a>
         </div>
       )}
-      {comments.slice(shouldStickyFirstComment ? 1 : 0).map((comment, i) => {
+      {comments.slice(shouldStickyFirstComment ? 1 : 0).map((comment) => {
         let originalText = comment.text;
         let parts: { text: string; type: 'text' | 'code' }[] = [
           { text: '', type: 'text' },
@@ -551,9 +551,10 @@ export const DweetCard: React.FC<Props> = (props) => {
           <div key={comment.id} style={{ marginTop: 16 }}>
             <UserView user={comment.author} />
             <div style={{ marginLeft: 32 + 16 }}>
-              {parts.map((part) =>
+              {parts.map((part, partKey) =>
                 part.type === 'code' ? (
                   <code
+                    key={partKey}
                     style={{
                       display: 'inline-flex',
                       background: 'hsl(0, 0%, 92.5%)',
@@ -571,6 +572,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                   </code>
                 ) : (
                   <Linkify
+                    key={partKey}
                     componentDecorator={(href, text, key) => (
                       <Link key={key} to={href}>
                         {text}
@@ -730,8 +732,8 @@ export const DweetCard: React.FC<Props> = (props) => {
 const DweetList: React.FC<{ dweet_ids: number[] }> = ({ dweet_ids }) => {
   return (
     <>
-      {dweet_ids.map((dweet_id) => (
-        <DweetElement dweet_id={dweet_id} />
+      {dweet_ids.map((dweet_id, key) => (
+        <DweetElement key={key} dweet_id={dweet_id} />
       ))}
     </>
   );
