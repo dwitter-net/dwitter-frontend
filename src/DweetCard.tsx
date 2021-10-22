@@ -37,7 +37,7 @@ const getUncompressedCode = (code: string) =>
       )
     ).replace(/u../g, '')
   ) +
-  code.slice(code.lastIndexOf(compressionTail) + 20, code.length - 1);
+  code.slice(code.lastIndexOf(compressionTail) + 21, code.length);
 
 interface HLJSNodeObject {
   kind: string;
