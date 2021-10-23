@@ -104,10 +104,7 @@ export const LoginForm = (props: Props) => {
           alignItems: 'center',
         }}
       >
-        <Link
-          className="mb-3 mt-3"
-          to="/accounts/register"
-        >
+        <Link className="mb-3 mt-3 mr-3" to="/accounts/register">
           Register
         </Link>
         <button
