@@ -1,5 +1,5 @@
-import React from "react";
-import { LoggedInUser } from "./api";
+import React from 'react';
+import { LoggedInUser } from './api';
 
 interface Theme {
   key: string;
@@ -16,42 +16,44 @@ interface Theme {
   modalBackgroundColor: string;
   primary: string;
   switchOffBackgroundColor: string;
+  primaryBackgroundTint: string;
+  primaryTextTint: string;
 }
 
 const darkPrimary = (brightness: number) => `hsl(205, 32%, ${brightness}%)`;
 
 export const themes: { [key: string]: Theme } = {
   light: {
-    key: "light",
-    mainTextColor: "#000",
-    pageBackgroundColor: "#f5f5f5",
-    headerBackgroundColor: "#fff",
-    mainBackgroundColor: "#fff",
-    secondaryBackgroundColor: "#eee",
-    secondaryTextColor: "#222",
-    secondaryBorderColor: "#aaa",
-    codeEditorBackgroundColor: "#222",
-    focusedTextInputBackgroundColor: "#fff",
-    focusedTextInputTextColor: "#000",
-    modalBackgroundColor: "#fff",
-    primary: "#007bff",
-    switchOffBackgroundColor: "#666",
+    key: 'light',
+    mainTextColor: '#000',
+    pageBackgroundColor: '#f5f5f5',
+    headerBackgroundColor: '#fff',
+    mainBackgroundColor: '#fff',
+    secondaryBackgroundColor: '#eee',
+    secondaryTextColor: '#222',
+    secondaryBorderColor: '#aaa',
+    codeEditorBackgroundColor: '#222',
+    focusedTextInputBackgroundColor: '#fff',
+    focusedTextInputTextColor: '#000',
+    modalBackgroundColor: '#fff',
+    primary: '#007bff',
+    switchOffBackgroundColor: '#666',
   },
   dark: {
-    key: "dark",
-    mainTextColor: "#eee",
+    key: 'dark',
+    mainTextColor: '#eee',
     pageBackgroundColor: darkPrimary(10),
-    headerBackgroundColor: "#000",
+    headerBackgroundColor: '#000',
     mainBackgroundColor: darkPrimary(18),
     secondaryBackgroundColor: darkPrimary(13),
-    secondaryTextColor: "#888",
+    secondaryTextColor: '#888',
     secondaryBorderColor: darkPrimary(13),
     codeEditorBackgroundColor: darkPrimary(13),
-    focusedTextInputBackgroundColor: "#222",
-    focusedTextInputTextColor: "#fff",
+    focusedTextInputBackgroundColor: '#222',
+    focusedTextInputTextColor: '#fff',
     modalBackgroundColor: darkPrimary(10),
-    primary: "#007bff",
-    switchOffBackgroundColor: "#666",
+    primary: '#007bff',
+    switchOffBackgroundColor: '#666',
   },
 };
 
