@@ -38,6 +38,8 @@ export const themes: { [key: string]: Theme } = {
     modalBackgroundColor: '#fff',
     primary: '#007bff',
     switchOffBackgroundColor: '#666',
+    primaryBackgroundTint: '#d1e7ff',
+    primaryTextTint: '#15467c',
   },
   dark: {
     key: 'dark',
@@ -54,6 +56,8 @@ export const themes: { [key: string]: Theme } = {
     modalBackgroundColor: darkPrimary(10),
     primary: '#007bff',
     switchOffBackgroundColor: '#666',
+    primaryBackgroundTint: '#022248',
+    primaryTextTint: '#a6d1ff',
   },
 };
 

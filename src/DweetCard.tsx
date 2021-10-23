@@ -1,5 +1,12 @@
-import React, { useEffect, useState, useRef, useContext, useCallback, useMemo } from 'react';
-import { Dweet, setLike, addComment, postDweet, getDweet } from './api';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useContext,
+  useCallback,
+  useMemo,
+} from 'react';
+import { Dweet, addComment, postDweet, getDweet } from './api';
 import { UserView, UserViewRight } from './UserView';
 import { ReportButton } from './ReportButton';
 import AceEditor from 'react-ace';
@@ -13,6 +20,7 @@ import hljs from 'highlight.js/lib/core';
 import javascriptHLJS from 'highlight.js/lib/languages/javascript';
 import Switch from 'react-switch';
 import { getDweetLength } from './utils';
+import { AwesomeButton } from './AwesomeButton';
 
 hljs.registerLanguage('js', javascriptHLJS);
 
@@ -61,9 +69,8 @@ export const DweetCard: React.FC<Props> = (props) => {
   const [iframeContainer, setIframeContainer] = useState<HTMLDivElement | null>(
     null
   );
-  const [iframe, setIframe] = useState<HTMLIFrameElement | null>(null);
+  const [, setIframe] = useState<HTMLIFrameElement | null>(null);
   const [shouldExpandComments, setShouldExpandComments] = useState(false);
-  const [isAwesomeLoading, setIsAwesomeLoading] = useState(false);
   const [updatedDweet, setUpdatedDweet] = useState<Dweet | null>(null);
   const [replyText, setReplyText] = useState('');
   const [originalShouldShowIframe, setShouldShowIframe] = useState(false);
@@ -74,7 +81,7 @@ export const DweetCard: React.FC<Props> = (props) => {
 
   const [newDweetRedirect, setNewDweetRedirect] = useState<string | null>(null);
 
-  const [context, _] = useContext(Context);
+  const [context] = useContext(Context);
 
   const isEmptyStateDweet = props.dweet === null;
   const shouldShowIframe = originalShouldShowIframe && !isEmptyStateDweet;
@@ -118,7 +125,10 @@ export const DweetCard: React.FC<Props> = (props) => {
   const [code, setCode] = useState(dweet?.code || '');
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const originalCode = useMemo(() => dweet?.code || '', []);
-  const isOriginalCodeCompressed = useMemo(() => isCodeCompressed(originalCode), [originalCode]);
+  const isOriginalCodeCompressed = useMemo(
+    () => isCodeCompressed(originalCode),
+    [originalCode]
+  );
 
   const shouldStickyFirstComment =
     dweet.comments.length > 0 &&
@@ -130,7 +140,6 @@ export const DweetCard: React.FC<Props> = (props) => {
     ? dweet.comments.slice(dweet.comments.length - 5)
     : dweet.comments;
 
-  
   const getCompressedCode = useCallback(() => {
     if (isOriginalCodeCompressed && !hasDweetChanged) {
       // if the dweet has not been edited, recover original compressed code
@@ -203,64 +212,7 @@ export const DweetCard: React.FC<Props> = (props) => {
               alignItems: 'stretch',
             }}
           >
-            <div className="border-radius d-flex">
-              <div
-                style={{
-                  width: 32,
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  display: 'flex',
-                  background: context.theme.pageBackgroundColor,
-                  borderTopLeftRadius: 4,
-                  borderBottomLeftRadius: 4,
-                }}
-              >
-                {!isEmptyStateDweet && dweet.awesome_count}
-              </div>
-              <button
-                disabled={isAwesomeLoading || isEmptyStateDweet}
-                className={
-                  dweet.has_user_awesomed
-                    ? 'btn btn-primary'
-                    : 'btn btn-secondary'
-                }
-                style={{
-                  height: 32,
-                  padding: '0 8px',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  borderTopLeftRadius: 0,
-                  borderBottomLeftRadius: 0,
-                  ...(isEmptyStateDweet ? { color: '#0000' } : {}),
-                }}
-                onClick={async (e) => {
-                  //@ts-ignore
-                  e.target.blur();
-                  e.preventDefault();
-                  setIsAwesomeLoading(true);
-                  try {
-                    await context.requireLogin({
-                      reason:
-                        'You need to log in in order to Awesome this dweet!',
-                      nextAction: 'click "Awesome!"',
-                    });
-                    const newDweet = await setLike(
-                      dweet.id,
-                      !dweet.has_user_awesomed
-                    );
-                    setUpdatedDweet(newDweet);
-                  } catch (e) {
-                    console.log(e);
-                    alert('Something went wrong. Please try again later.');
-                  } finally {
-                    setIsAwesomeLoading(false);
-                  }
-                }}
-              >
-                Awesome!
-              </button>
-            </div>
+            <AwesomeButton dweet={dweet} onUpdate={setUpdatedDweet} />
           </div>
         </div>
         <ReportButton
