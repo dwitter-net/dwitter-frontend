@@ -147,9 +147,10 @@ export const Header: React.FC<{}> = (props) => {
               )}
             </DropdownToggle>
             <DropdownMenu>
-              {menu.map((item) =>
+              {menu.map((item, itemKey) =>
                 item.to ? (
                   <Link
+                    key={itemKey}
                     className="dropdown-item"
                     to={item.to}
                     onClick={() => setIsMobileNavMenuOpen(false)}
@@ -161,8 +162,9 @@ export const Header: React.FC<{}> = (props) => {
                     {item.name}
                   </Link>
                 ) : (
-                  item.subitems?.map((subitem) => (
+                  item.subitems?.map((subitem, subitemKey) => (
                     <Link
+                      key={subitemKey}
                       className="dropdown-item"
                       to={subitem.to}
                       onClick={() => setIsMobileNavMenuOpen(false)}
@@ -180,7 +182,7 @@ export const Header: React.FC<{}> = (props) => {
           </Dropdown>
         </div>
         <div className="d-none d-sm-flex align-items-center">
-          {menu.map((item) =>
+          {menu.map((item, itemKey) =>
             !item.subitems ? (
               <NavLink
                 key={item.name}
@@ -192,7 +194,7 @@ export const Header: React.FC<{}> = (props) => {
                 {item.name}
               </NavLink>
             ) : (
-              <div>
+              <div key={itemKey}>
                 <Dropdown
                   isOpen={subItemMenuOpenMap[item.name]}
                   toggle={() =>
