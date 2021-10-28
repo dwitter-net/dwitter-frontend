@@ -12,9 +12,9 @@ export const Create: React.FC<RouteComponentProps> = (props) => {
   const [code, setCode] = useState(defaultDweet);
   const [comment, setComment] = useState('');
   return (
-    <div className="container-fluid">
+    <div className="container-fluid" id="new-dweet">
       <div className="row mt-3">
-        <div className="col">
+        <div className="col dweet-view-col">
           <div className="card p-3">
             <div
               style={{
@@ -43,7 +43,7 @@ export const Create: React.FC<RouteComponentProps> = (props) => {
             </div>
           </div>
         </div>
-        <div className="col">
+        <div className="col dweet-editor-col">
           <div className="card p-3" style={{ background: '#272822' }}>
             <div
               style={{

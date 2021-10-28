@@ -207,3 +207,26 @@ header button {
 a.no-link-color {
     color: inherit;
 }
+
+/* dweet creation responsive layout wrap */
+#new-dweet .dweet-view-col,
+#new-dweet .dweet-editor-col {
+    min-width: 520px;
+}
+
+@media (max-width: 1100px) {
+    #new-dweet {
+        max-width: 640px;
+    }
+}
+
+@media (max-width: 640px) {
+    #new-dweet {
+        max-width: 100%;
+
+        .dweet-view-col,
+        .dweet-editor-col {
+            min-width: 100%;
+        }
+    }
+}
