@@ -100,6 +100,25 @@ export const DweetCard: React.FC<Props> = (props) => {
     observer.observe(iframeContainer);
   }, [iframeContainer, shouldShowIframe]);
 
+  useEffect(() => {
+    const handler = (event: MessageEvent) => {
+      if (
+        event.origin !== 'http://dweet.localhost:8000' &&
+        event.origin !== 'https://dweet.dwitter.net'
+      ) {
+        return;
+      }
+
+      if (event.data.type === 'error') {
+        setError(event.data.error);
+      }
+    };
+
+    window.addEventListener('message', handler);
+    // clean up
+    return () => window.removeEventListener('message', handler);
+  }, []);
+
   const [showShareModal, setShowShareModal] = useState(false);
   const [showRemixListModal, setShowRemixListModal] = useState(false);
 
@@ -129,6 +148,8 @@ export const DweetCard: React.FC<Props> = (props) => {
     () => isCodeCompressed(originalCode),
     [originalCode]
   );
+
+  const [error, setError] = useState('');
 
   const shouldStickyFirstComment =
     dweet.comments.length > 0 &&
@@ -355,6 +376,7 @@ export const DweetCard: React.FC<Props> = (props) => {
               }}
               onChange={(code) => {
                 setCode(code);
+                setError('');
                 setHasDweetChanged(code !== originalCode);
               }}
               style={{
@@ -382,6 +404,9 @@ export const DweetCard: React.FC<Props> = (props) => {
           >
             {new Date(dweet.posted).toLocaleString()}
           </a>
+        </div>
+        <div>
+          <pre style={{ color: 'red' }}>{error}</pre>
         </div>
         <div>
           <form
