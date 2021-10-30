@@ -171,12 +171,20 @@ export const DweetCard: React.FC<Props> = (props) => {
     }
 
     let r = '';
-    for (let i = 0; i < code.length; i += 2)
+    for (let i = 0; i < code.length; i += 2) {
       r += String.fromCharCode(
         0xd800 + code.charCodeAt(i),
         0xdc00 + (code.charCodeAt(i + 1) || 10)
       );
-    return 'eval(unescape(escape`' + r + "`.replace(/u../g,'')))";
+    }
+    let compressedCode = 'eval(unescape(escape`' + r + "`.replace(/u../g,'')))";
+    try {
+      encodeURIComponent(compressedCode);
+      return compressedCode;
+    } catch (e) {
+      setError('An error occurred while trying to compress the code');
+      return code;
+    }
   }, [code, originalCode, hasDweetChanged, isOriginalCodeCompressed]);
 
   return (
