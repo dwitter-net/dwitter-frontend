@@ -18,7 +18,9 @@ export const AwesomeButton: React.FC<{
     setHasUserAwesomed(dweet?.has_user_awesomed || false);
     if (dweet && dweet.id !== 1) {
       setCachedAwesomeCountForAnimation((old) =>
-        old === -1 ? dweet.awesome_count : old
+        old === -1
+          ? dweet.awesome_count - (dweet.has_user_awesomed ? 1 : 0)
+          : old
       );
     }
   }, [dweet]);
