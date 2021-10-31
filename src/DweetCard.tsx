@@ -69,7 +69,7 @@ export const DweetCard: React.FC<Props> = (props) => {
   const [iframeContainer, setIframeContainer] = useState<HTMLDivElement | null>(
     null
   );
-  const [, setIframe] = useState<HTMLIFrameElement | null>(null);
+  const [iframe, setIframe] = useState<HTMLIFrameElement | null>(null);
   const [shouldExpandComments, setShouldExpandComments] = useState(false);
   const [updatedDweet, setUpdatedDweet] = useState<Dweet | null>(null);
   const [replyText, setReplyText] = useState('');
@@ -102,6 +102,9 @@ export const DweetCard: React.FC<Props> = (props) => {
 
   useEffect(() => {
     const handler = (event: MessageEvent) => {
+      if (event.source !== iframe?.contentWindow) {
+        return;
+      }
       if (
         event.origin !== 'http://dweet.localhost:8000' &&
         event.origin !== 'https://dweet.dwitter.net'
@@ -117,7 +120,7 @@ export const DweetCard: React.FC<Props> = (props) => {
     window.addEventListener('message', handler);
     // clean up
     return () => window.removeEventListener('message', handler);
-  }, []);
+  }, [iframe]);
 
   const [showShareModal, setShowShareModal] = useState(false);
   const [showRemixListModal, setShowRemixListModal] = useState(false);
