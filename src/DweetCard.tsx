@@ -496,7 +496,13 @@ export const DweetCard: React.FC<Props> = (props) => {
                 : 'none',
           }}
         >
-          <Linkify properties={{target: '_blank'}}>{dweet.comments[0].text}</Linkify>
+          <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
+            <a target="blank" href={decoratedHref} key={key}>
+              {decoratedText}
+            </a>
+           )}>
+           {dweet.comments[0].text}
+          </Linkify>
         </div>
       )}
       {shouldCollapseComments && (
