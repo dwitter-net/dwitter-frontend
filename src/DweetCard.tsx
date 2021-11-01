@@ -496,7 +496,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 : 'none',
           }}
         >
-          <Linkify>{dweet.comments[0].text}</Linkify>
+          <Linkify properties={{target: '_blank'}}>{dweet.comments[0].text}</Linkify>
         </div>
       )}
       {shouldCollapseComments && (

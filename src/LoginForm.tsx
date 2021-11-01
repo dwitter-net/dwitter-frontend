@@ -54,7 +54,7 @@ export const LoginForm = (props: Props) => {
     >
       <label htmlFor="username">Username</label>
       <input
-        autoFocus={true}
+        autoFocus
         id="username"
         name="username"
         type="text"
