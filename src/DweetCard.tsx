@@ -19,7 +19,7 @@ import { Link, Redirect } from 'react-router-dom';
 import hljs from 'highlight.js/lib/core';
 import javascriptHLJS from 'highlight.js/lib/languages/javascript';
 import Switch from 'react-switch';
-import { getDweetLength } from './utils';
+import { compressCode, getDweetLength } from './utils';
 import { AwesomeButton } from './AwesomeButton';
 
 hljs.registerLanguage('js', javascriptHLJS);
@@ -170,14 +170,7 @@ export const DweetCard: React.FC<Props> = (props) => {
       return originalCode;
     }
 
-    let r = '';
-    for (let i = 0; i < code.length; i += 2) {
-      r += String.fromCharCode(
-        0xd800 + code.charCodeAt(i),
-        0xdc00 + (code.charCodeAt(i + 1) || 10)
-      );
-    }
-    let compressedCode = 'eval(unescape(escape`' + r + "`.replace(/u../g,'')))";
+    let compressedCode = compressCode(code);
     try {
       encodeURIComponent(compressedCode);
       return compressedCode;
@@ -186,6 +179,16 @@ export const DweetCard: React.FC<Props> = (props) => {
       return code;
     }
   }, [code, originalCode, hasDweetChanged, isOriginalCodeCompressed]);
+
+  const encodedCode = useMemo(() => {
+    try {
+      const ec = encodeURIComponent(code);
+      return ec;
+    } catch (e) {
+      setError('Encoding error');
+      return '';
+    }
+  }, [code, setError, error]);
 
   return (
     <div className="card p-3 mb-3">
@@ -217,7 +220,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 'id/' +
                 dweet.id +
                 '?autoplay=true&code=' +
-                encodeURIComponent(code)
+                encodedCode
               }
               sandbox="allow-same-origin allow-scripts"
               style={{
