@@ -11,35 +11,17 @@ const getSurrogatePair = (firstCharCode: number, secondCharCode: number) => {
 export const compressCode = (code: string) => {
 
   let compressedCode = '';
+  let possibleDataLoss = false;
   for (let i = 0; i < code.length; i += 2) {
     let firstCharCode = code.charCodeAt(i);
     let secondCharCode = code.charCodeAt(i + 1);
 
-    if (
-      firstCharCode < 1024 &&
-      (Number.isNaN(secondCharCode) || secondCharCode < 1024)
-    ) {
-      compressedCode += getSurrogatePair(firstCharCode, secondCharCode);
-    } else {
-
-      if (firstCharCode >= 1024) {
-        compressedCode += code[i];
-        if (!Number.isNaN(secondCharCode)) {
-          if (secondCharCode >= 1024) {
-            compressedCode += code[i + 1];
-          } else {
-            i--;
-          }
-        }
-      } else {
-        if (secondCharCode >= 1024) {
-          compressedCode += code[i + 1];
-        } else {
-          i--;
-        }
-      }
-    }
+    compressedCode += getSurrogatePair(firstCharCode, secondCharCode);
+    possibleDataLoss = possibleDataLoss || firstCharCode > 1023 || secondCharCode > 1023;
   }
 
-  return 'eval(unescape(escape`' + compressedCode + "`.replace(/u../g,'')))";
+  return {
+    compressedCode: 'eval(unescape(escape`' + compressedCode + "`.replace(/u../g,'')))",
+    possibleDataLoss
+  };
 }

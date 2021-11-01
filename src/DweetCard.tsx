@@ -170,7 +170,12 @@ export const DweetCard: React.FC<Props> = (props) => {
       return originalCode;
     }
 
-    let compressedCode = compressCode(code);
+    let { compressedCode, possibleDataLoss } = compressCode(code);
+
+    if (possibleDataLoss) {
+      setError('WARNING: possible data loss in the compressed code');
+    }
+
     try {
       encodeURIComponent(compressedCode);
       return compressedCode;
