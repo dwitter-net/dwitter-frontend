@@ -497,7 +497,7 @@ export const DweetCard: React.FC<Props> = (props) => {
           }}
         >
           <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-            <a target="blank" href={decoratedHref} key={key}>
+            <a target="_blank" href={decoratedHref} key={key}>
               {decoratedText}
             </a>
            )}>
@@ -602,7 +602,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                   <Linkify
                     key={partKey}
                     componentDecorator={(href, text, key) => (
-                      <Link key={key} to={href}>
+                      <Link target="_blank" key={key} to={href}>
                         {text}
                       </Link>
                     )}
