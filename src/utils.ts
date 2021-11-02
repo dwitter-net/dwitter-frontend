@@ -58,19 +58,32 @@ export const getUncompressedCode = (code: string) => {
       code.lastIndexOf(compressionTail) - 1
     )
   );
+
   const tail = code.slice(code.lastIndexOf(compressionTail), code.length).replace(/\s/g, '');
-  const tailEnd = tail.indexOf("')") + 2;
+
+  var tailEnd = 2;
+  if (tail.indexOf("')") !== -1) {
+    tailEnd += tail.indexOf("')");
+  } else if (tail.indexOf('")') !== -1) {
+    tailEnd += tail.indexOf('")');
+  } else if (tail.indexOf("`)") !== -1) {
+    tailEnd += tail.indexOf("`)");
+  }
+
   const regexpEnd = tail.indexOf(',');
   const regexString = tail.slice(9, regexpEnd);
-  let replacement = tail.slice(regexpEnd + 1, tail.length).match(/'(.*?)'/);
+
+  let replacement = tail.slice(regexpEnd + 1, tail.length).match(/('(.*?)'\)|"(.*?)"\)|`(.*?)`\))/);
+
   const unescapedString = unescape(
     escapedString.replace(
       getRegFromString(regexString),
-      replacement ? replacement[1] : '')
+      replacement ? replacement[2] ?? replacement[3] ?? replacement[4] ?? '' : '')
   );
+
   return (
-    code.slice(0, code.lastIndexOf(compressionIncipit)) +
-    unescapedString +
-    tail.slice(tailEnd + 2, tail.length)
+    code.slice(0, code.lastIndexOf(compressionIncipit)) + // code before the "eval"
+    unescapedString + // uncompressed code
+    tail.slice(tailEnd + 2, tail.length) // code after the compressed section
   ).trim();
 };
