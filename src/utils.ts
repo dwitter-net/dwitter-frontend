@@ -20,6 +20,8 @@ export const compressCode = (code: string) => {
 
     if (firstCharCode < 207 && !Number.isNaN(secondCharCode) && secondCharCode < 207) {
       compressedCode += String.fromCharCode(Number('0x' + firstCharCode.toString(16).padStart(2, '0') + secondCharCode.toString(16).padStart(2, '0')));
+    } else if (firstCharCode < 207 && (Number.isNaN(secondCharCode) || secondCharCode >= 207)) {
+      compressedCode += String.fromCharCode(Number('0x' + firstCharCode.toString(16).padStart(2, '0') + '20'));
     } else {
       compressedCode += code[i];
       i--;
@@ -70,5 +72,5 @@ export const getUncompressedCode = (code: string) => {
     code.slice(0, code.lastIndexOf(compressionIncipit)) +
     unescapedString +
     tail.slice(tailEnd + 2, tail.length)
-  );
+  ).trim();
 };
