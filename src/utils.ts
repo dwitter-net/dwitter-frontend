@@ -10,10 +10,9 @@ export const getDweetLength = (code: string) =>
 
 export const compressCode = (code: string) => {
   if (code.length < 1) {
-    return { compressedCode: code };
+    return code;
   }
   let compressedCode = '';
-  let possibleDataLoss = false;
   for (let i = 0; i < code.length; i += 2) {
     let firstCharCode = code.charCodeAt(i);
     let secondCharCode = code.charCodeAt(i + 1);
@@ -26,14 +25,9 @@ export const compressCode = (code: string) => {
       compressedCode += code[i];
       i--;
     }
-
-    possibleDataLoss = possibleDataLoss || firstCharCode > 1023 || secondCharCode > 1023;
   }
 
-  return {
-    compressedCode: 'eval(unescape(escape`' + compressedCode + "`.replace(/u([^D].)/g,'$1%')))",
-    possibleDataLoss
-  };
+  return 'eval(unescape(escape`' + compressedCode + "`.replace(/u([^D].)/g,'$1%')))";
 }
 
 const compressionIncipit = 'eval(unescape(escape';
@@ -51,7 +45,12 @@ function getRegFromString(string: string) {
   return new RegExp(pattern, modifiers);
 }
 
-export const getUncompressedCode = (code: string) => {
+export const getUncompressedCode = (
+  code: string,
+  setError: React.Dispatch<React.SetStateAction<string>>,
+) => {
+  setError('');
+
   const escapedString = escape(
     code.slice(
       code.lastIndexOf(compressionIncipit) + 21,

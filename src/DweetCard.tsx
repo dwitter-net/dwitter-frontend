@@ -156,14 +156,11 @@ export const DweetCard: React.FC<Props> = (props) => {
       return originalCode;
     }
 
-    let { compressedCode, possibleDataLoss } = compressCode(code);
-
-    if (possibleDataLoss) {
-      setError('WARNING: possible data loss in the compressed code');
-    }
+    let compressedCode = compressCode(code);
 
     try {
       encodeURIComponent(compressedCode);
+      setError('');
       return compressedCode;
     } catch (e) {
       setError('An error occurred while trying to compress the code');
@@ -355,7 +352,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 onChange={() =>
                   setCode((old) =>
                     isCodeCompressed(old)
-                      ? getUncompressedCode(old)
+                      ? getUncompressedCode(old, setError)
                       : getCompressedCode()
                   )
                 }
