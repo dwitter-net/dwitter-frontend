@@ -41,6 +41,14 @@ export const isCodeCompressed = (code: string) =>
   code.lastIndexOf(compressionIncipit) !== -1 &&
   code.lastIndexOf(compressionTail) !== -1;
 
+function getRegFromString(string: string) {
+  var a = string.split("/");
+  let modifiers = a.pop();
+  a.shift();
+  let pattern = a.join("/");
+  return new RegExp(pattern, modifiers);
+}
+
 export const getUncompressedCode = (code: string) => {
   const escapedString = escape(
     code.slice(
@@ -48,10 +56,15 @@ export const getUncompressedCode = (code: string) => {
       code.lastIndexOf(compressionTail) - 1
     )
   );
-  const tail = code.slice(code.lastIndexOf(compressionTail), code.length);
+  const tail = code.slice(code.lastIndexOf(compressionTail), code.length).replace(/\s/g, '');
   const tailEnd = tail.indexOf("')") + 2;
+  const regexpEnd = tail.indexOf(',');
+  const regexString = tail.slice(9, regexpEnd);
+  let replacement = tail.slice(regexpEnd + 1, tail.length).match(/'(.*?)'/);
   const unescapedString = unescape(
-    eval("'" + escapedString + "'" + tail.slice(0, tailEnd))
+    escapedString.replace(
+      getRegFromString(regexString),
+      replacement ? replacement[1] : '')
   );
   return (
     code.slice(0, code.lastIndexOf(compressionIncipit)) +
