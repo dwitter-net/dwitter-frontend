@@ -1,13 +1,6 @@
 export const getDweetLength = (code: string) =>
   [...code.replace(/\r\n/g, '\n')].length;
 
-// const getSurrogatePair = (firstCharCode: number, secondCharCode: number) => {
-//   return String.fromCharCode(
-//     0xd800 + firstCharCode,
-//     0xdc00 + (Number.isNaN(secondCharCode) ? 10 : secondCharCode)
-//   );
-// };
-
 export const compressCode = (code: string) => {
   if (code.length < 1) {
     return code;
