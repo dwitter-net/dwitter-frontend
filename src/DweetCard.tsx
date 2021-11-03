@@ -19,7 +19,12 @@ import { Link, Redirect } from 'react-router-dom';
 import hljs from 'highlight.js/lib/core';
 import javascriptHLJS from 'highlight.js/lib/languages/javascript';
 import Switch from 'react-switch';
-import { getDweetLength } from './utils';
+import {
+  compressCode,
+  getDweetLength,
+  getUncompressedCode,
+  isCodeCompressed,
+} from './utils';
 import { AwesomeButton } from './AwesomeButton';
 
 hljs.registerLanguage('js', javascriptHLJS);
@@ -27,25 +32,6 @@ hljs.registerLanguage('js', javascriptHLJS);
 interface Props {
   dweet: Dweet | null;
 }
-
-const compressionIncipit = 'eval(unescape(escape';
-const compressionTail = '.replace(/u';
-
-const isCodeCompressed = (code: string) =>
-  code.lastIndexOf(compressionIncipit) !== -1 &&
-  code.lastIndexOf(compressionTail) !== -1;
-
-const getUncompressedCode = (code: string) =>
-  code.slice(0, code.lastIndexOf(compressionIncipit)) +
-  unescape(
-    escape(
-      code.slice(
-        code.lastIndexOf(compressionIncipit) + 21,
-        code.lastIndexOf(compressionTail) - 1
-      )
-    ).replace(/u../g, '')
-  ) +
-  code.slice(code.lastIndexOf(compressionTail) + 21, code.length);
 
 interface HLJSNodeObject {
   kind: string;
@@ -170,14 +156,27 @@ export const DweetCard: React.FC<Props> = (props) => {
       return originalCode;
     }
 
-    let r = '';
-    for (let i = 0; i < code.length; i += 2)
-      r += String.fromCharCode(
-        0xd800 + code.charCodeAt(i),
-        0xdc00 + (code.charCodeAt(i + 1) || 10)
-      );
-    return 'eval(unescape(escape`' + r + "`.replace(/u../g,'')))";
+    let compressedCode = compressCode(code);
+
+    try {
+      encodeURIComponent(compressedCode);
+      setError('');
+      return compressedCode;
+    } catch (e) {
+      setError('An error occurred while trying to compress the code');
+      return code;
+    }
   }, [code, originalCode, hasDweetChanged, isOriginalCodeCompressed]);
+
+  const encodedCode = useMemo(() => {
+    try {
+      const ec = encodeURIComponent(code);
+      return ec;
+    } catch (e) {
+      setError('Encoding error');
+      return '';
+    }
+  }, [code, setError, error]);
 
   return (
     <div className="card p-3 mb-3">
@@ -209,7 +208,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 'id/' +
                 dweet.id +
                 '?autoplay=true&code=' +
-                encodeURIComponent(code)
+                encodedCode
               }
               sandbox="allow-same-origin allow-scripts"
               style={{
@@ -353,7 +352,7 @@ export const DweetCard: React.FC<Props> = (props) => {
                 onChange={() =>
                   setCode((old) =>
                     isCodeCompressed(old)
-                      ? getUncompressedCode(old)
+                      ? getUncompressedCode(old, setError)
                       : getCompressedCode()
                   )
                 }
