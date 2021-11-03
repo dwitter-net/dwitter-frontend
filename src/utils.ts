@@ -1,10 +1,13 @@
 export const getDweetLength = (code: string) =>
   [...code.replace(/\r\n/g, '\n')].length;
 
-export const compressCode = (code: string) => {
+export const compressCode: (code: string) => string = (code) => {
   if (code.length < 1) {
     return code;
   }
+
+  let purifiable = false;
+
   let compressedCode = '';
   for (let i = 0; i < code.length; i += 2) {
     let firstCharCode = code.charCodeAt(i);
@@ -15,11 +18,19 @@ export const compressCode = (code: string) => {
     } else if (firstCharCode < 207 && Number.isNaN(secondCharCode)) {
       compressedCode += String.fromCharCode(Number('0x' + firstCharCode.toString(16).padStart(2, '0') + '20'));
     } else {
-      compressedCode += code[i];
+      if (firstCharCode > 255 && firstCharCode < 53248) {
+        purifiable = true;
+        compressedCode += String.fromCharCode(Number(escape(code[i]).replace(/%u../g, '0x00')));
+      }
+      else {
+        compressedCode += code[i];
+      }
       i--;
     }
   }
-
+  if (purifiable) {
+    return compressCode(unescape(escape(compressedCode).replace(/u([^D].)/g, '$1%')));
+  }
   return 'eval(unescape(escape`' + compressedCode + "`.replace(/u([^D].)/g,'$1%')))";
 }
 
