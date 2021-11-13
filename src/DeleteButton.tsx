@@ -1,13 +1,13 @@
 import React, { useState, useContext } from 'react';
 import { Context } from './Context';
-import { reportDweet, reportComment } from './api';
+import { deleteComment, deleteDweet, Dweet } from './api';
 
-export const ReportButton: React.FC<{
+export const DeleteButton: React.FC<{
   dweetId?: number;
   commentId?: number;
+  onDeleted?: () => void;
   isEmptyStateDweet: boolean;
 }> = (props) => {
-  const [hasReported, setHasReported] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [context, _] = useContext(Context);
 
@@ -18,26 +18,22 @@ export const ReportButton: React.FC<{
       style={{
         ...(props.isEmptyStateDweet
           ? { background: 'var(--blue)', borderRadius: 4, opacity: 0.33 }
-          : {}),
-        ...(hasReported ? { color: 'gray' } : {}),
+          : { color: 'var(--red)' }),
       }}
       onClick={async (e) => {
         e.preventDefault();
 
-        if (hasReported) {
-          return;
-        }
         if (
           !window.confirm(
-            'Are you sure you want to report this to a moderator?'
+            'Are you sure you want to delete this ' + object + '?'
           )
         ) {
           return;
         }
         try {
           await context.requireLogin({
-            reason: `You need to log in in order to report this ${object}! Log in now, the ${object} will be reported.`,
-            nextAction: `report ${object}`,
+            reason: `You need to log in in order to delete this ${object}! Log in now, the ${object} will be deleted if it's yours.`,
+            nextAction: `Delete ${object}`,
           });
         } catch {
           return;
@@ -46,23 +42,27 @@ export const ReportButton: React.FC<{
         setIsLoading(true);
         try {
           if (props.dweetId) {
-            await reportDweet(props.dweetId);
+            await deleteDweet(props.dweetId);
+            if (props.onDeleted) {
+              props.onDeleted();
+            }
+          } else if (props.commentId) {
+            await deleteComment(props.commentId);
+            if (props.onDeleted) {
+              props.onDeleted();
+            }
           }
-          if (props.commentId) {
-            await reportComment(props.commentId);
-          }
-          setHasReported(true);
-        } catch {
+        } catch (e) {
+          console.log(e);
           alert(
-            `Something went wrong when trying to report this ${object}. If this persists, let us know on discord.`
+            `Something went wrong when trying to delete this ${object}. If this persists, let us know on discord.`
           );
-          setHasReported(false);
         } finally {
           setIsLoading(false);
         }
       }}
     >
-      {isLoading ? 'reporting' : hasReported ? 'reported' : 'report'}
+      {isLoading ? 'deleting' : 'delete'}
     </a>
   );
 };
