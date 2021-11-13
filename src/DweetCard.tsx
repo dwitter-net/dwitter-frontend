@@ -277,7 +277,7 @@ export const DweetCard: React.FC<Props> = (props) => {
               setShowRemixListModal(true);
             }}
           >
-            {dweet.remixes.length} remixes
+            {dweet.remixes.length} remix{dweet.remixes.length > 1 && 'es'}
           </a>
         )}
         <a
