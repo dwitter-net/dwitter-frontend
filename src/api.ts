@@ -11,6 +11,7 @@ export interface LoggedInUser {
   username: string;
   avatar: string;
   email: string;
+  is_staff: boolean;
 }
 
 export interface DweetComment {
@@ -19,10 +20,12 @@ export interface DweetComment {
   posted: string;
   author: User;
   reply_to: number;
+  deleted: boolean;
 }
 
 export interface Dweet {
   id: number;
+  deleted: boolean;
   code: string;
   posted: string;
   author: User;
@@ -85,6 +88,25 @@ async function post(path: string, options: { data?: any }) {
   return await response.json();
 }
 
+async function del(path: string) {
+  const token = localStorage.getItem('token');
+  const response = await fetch(process.env.REACT_APP_API_BASE_URL + path, {
+    method: 'delete',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
+      ...(token ? { Authorization: 'token ' + token } : {}),
+    },
+  });
+  if (token && response.status === 401) {
+    localStorage.removeItem('token');
+  }
+  if (!response.ok) {
+    throw await response.json();
+  }
+  return await response;
+}
+
 export async function getDweets(
   order_by: string,
   hashtag: string,
@@ -126,6 +148,14 @@ export async function setLike(id: number, like: boolean): Promise<Dweet> {
       like,
     },
   });
+}
+
+export async function deleteDweet(id: number) {
+  return del(`dweets/${id}`);
+}
+
+export async function deleteComment(id: number) {
+  return del(`comments/${id}`);
 }
 
 export async function login(

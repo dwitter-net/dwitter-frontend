@@ -6,9 +6,10 @@ import React, {
   useCallback,
   useMemo,
 } from 'react';
-import { Dweet, addComment, postDweet, getDweet } from './api';
+import { Dweet, DweetComment, addComment, postDweet, getDweet } from './api';
 import { UserView, UserViewRight } from './UserView';
 import { ReportButton } from './ReportButton';
+import { DeleteButton } from './DeleteButton';
 import AceEditor from 'react-ace';
 import 'ace-builds/src-noconflict/mode-javascript';
 import 'ace-builds/src-noconflict/theme-monokai';
@@ -26,6 +27,7 @@ import {
   isCodeCompressed,
 } from './utils';
 import { AwesomeButton } from './AwesomeButton';
+import { request } from 'https';
 
 hljs.registerLanguage('js', javascriptHLJS);
 
@@ -115,6 +117,7 @@ export const DweetCard: React.FC<Props> = (props) => {
 
   const dweet: Dweet = (updatedDweet ? updatedDweet : props.dweet) || {
     id: -1,
+    deleted: false,
     code: '',
     awesome_count: 0,
     author: {
@@ -180,6 +183,20 @@ export const DweetCard: React.FC<Props> = (props) => {
     }
   }, [code, setError, error]);
 
+  if (dweet.deleted) {
+    return (
+      <div className="card p-3 mb-3">
+        <div className="d-flex align-items-center mb-3">
+          <span style={{ textAlign: 'left' }}>
+            [ this dweet no longer exists ]
+          </span>
+          <div style={{ flex: 1 }} />
+          <RemixOf dweet={dweet} />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="card p-3 mb-3">
       <div
@@ -237,10 +254,37 @@ export const DweetCard: React.FC<Props> = (props) => {
             <AwesomeButton dweet={dweet} onUpdate={setUpdatedDweet} />
           </div>
         </div>
-        <ReportButton
-          dweetId={dweet.id}
-          isEmptyStateDweet={isEmptyStateDweet}
-        />
+        {context.user && dweet.author.id == context?.user.id ? (
+          // Swap report button with delete for your own dweet
+          <DeleteButton
+            dweetId={dweet.id}
+            isEmptyStateDweet={isEmptyStateDweet}
+            onDeleted={() => {
+              setUpdatedDweet({ ...dweet, deleted: true });
+            }}
+          />
+        ) : (
+          <>
+            {context.user &&
+              context?.user.is_staff && ( // Extra delete button for mods
+                <span>
+                  <DeleteButton
+                    dweetId={dweet.id}
+                    isEmptyStateDweet={isEmptyStateDweet}
+                    onDeleted={() => {
+                      setUpdatedDweet({ ...dweet, deleted: true });
+                    }}
+                  />
+                </span>
+              )}
+            <div style={{ marginLeft: 16 }}>
+              <ReportButton
+                dweetId={dweet.id}
+                isEmptyStateDweet={isEmptyStateDweet}
+              />
+            </div>
+          </>
+        )}
         <a
           href="#"
           style={{
@@ -257,7 +301,7 @@ export const DweetCard: React.FC<Props> = (props) => {
             setShowShareModal(true);
           }}
         >
-          Share
+          share
         </a>
         {dweet.remixes.length > 0 && (
           <a
@@ -295,29 +339,13 @@ export const DweetCard: React.FC<Props> = (props) => {
             iframeContainer?.requestFullscreen();
           }}
         >
-          Fullscreen
+          fullscreen
         </a>
       </div>
       <div className="d-flex align-items-center mb-3">
         <UserView user={dweet.author} />
         <div style={{ flex: 1 }} />
-        {dweet.remix_of && (
-          <>
-            <span>Remix of </span>
-            <Link to={'/d/' + dweet.remix_of.id} className="no-link-color mx-2">
-              <span
-                style={{
-                  opacity: '0.5',
-                }}
-              >
-                d/
-              </span>
-              {dweet.remix_of.id}
-            </Link>
-            <span className="mr-2"> by </span>
-            <UserViewRight user={dweet.remix_of.author} />
-          </>
-        )}
+        <RemixOf dweet={dweet} />
       </div>
       <div
         style={{
@@ -495,12 +523,14 @@ export const DweetCard: React.FC<Props> = (props) => {
                 : 'none',
           }}
         >
-          <Linkify componentDecorator={(decoratedHref, decoratedText, key) => (
-            <a target="_blank" href={decoratedHref} key={key}>
-              {decoratedText}
-            </a>
-           )}>
-           {dweet.comments[0].text}
+          <Linkify
+            componentDecorator={(decoratedHref, decoratedText, key) => (
+              <a target="_blank" href={decoratedHref} key={key}>
+                {decoratedText}
+              </a>
+            )}
+          >
+            {dweet.comments[0].text}
           </Linkify>
         </div>
       )}
@@ -518,100 +548,15 @@ export const DweetCard: React.FC<Props> = (props) => {
         </div>
       )}
       {comments.slice(shouldStickyFirstComment ? 1 : 0).map((comment) => {
-        let originalText = comment.text;
-        let parts: { text: string; type: 'text' | 'code' }[] = [
-          { text: '', type: 'text' },
-        ];
-        let isInsideBacktickPair = false;
-        let j = 0;
-        while (j < originalText.length) {
-          const letter = originalText[j];
-          if (letter === '\\' && isInsideBacktickPair) {
-            if (originalText[j + 1] === '`') {
-              parts[parts.length - 1].text += '`';
-              j += 2;
-              continue;
-            }
-          }
-          if (letter === '`') {
-            if (!isInsideBacktickPair) {
-              isInsideBacktickPair = true;
-              j++;
-              parts.push({ text: '', type: 'code' });
-              continue;
-            } else {
-              isInsideBacktickPair = false;
-              j++;
-              parts.push({ text: '', type: 'text' });
-              continue;
-            }
-          }
-
-          parts[parts.length - 1].text += letter;
-          j++;
-        }
-
         return (
-          <div
-            key={comment.id}
-            style={{ marginTop: 16 }}
-            className="hover-parent"
-          >
-            <div
-              className="hover-parent"
-              style={{
-                float: 'right',
-                padding: '2px 8px',
-                fontSize: 10,
-                borderRadius: 4,
-                background: '#f5f5f5',
-                alignItems: 'center',
-                justifyContent: 'center',
-              }}
-            >
-              <div className="show-on-parent-hover">
-                <ReportButton
-                  commentId={comment.id}
-                  isEmptyStateDweet={isEmptyStateDweet}
-                />
-              </div>
-            </div>
-            <UserView user={comment.author} />
-            <div style={{ marginLeft: 32 + 16 }}>
-              {parts.map((part, partKey) =>
-                part.type === 'code' ? (
-                  <code
-                    key={partKey}
-                    style={{
-                      display: 'inline-flex',
-                      background: 'hsl(0, 0%, 92.5%)',
-                      borderRadius: 4,
-                      padding: '2px 4px',
-                      fontSize: 12,
-                      flexWrap: 'wrap',
-                    }}
-                  >
-                    {hljs
-                      .highlight('js', part.text)
-                      .emitter.rootNode.children.map(
-                        (child: HLJSNode, i: number) => renderHLJSNode(child, i)
-                      )}
-                  </code>
-                ) : (
-                  <Linkify
-                    key={partKey}
-                    componentDecorator={(href, text, key) => (
-                      <Link target="_blank" key={key} to={href}>
-                        {text}
-                      </Link>
-                    )}
-                  >
-                    {part.text}
-                  </Linkify>
-                )
-              )}
-            </div>
-          </div>
+          <DweetCommentView
+            comment={comment}
+            deletePermission={
+              context.user && comment.author.id == context?.user.id
+            }
+            moderator={context?.user ? context?.user.is_staff : false}
+            isEmptyStateDweet={isEmptyStateDweet}
+          />
         );
       })}
       <form
@@ -754,6 +699,173 @@ export const DweetCard: React.FC<Props> = (props) => {
       </Modal>
     </div>
   );
+};
+
+const DweetCommentView: React.FC<{
+  comment: DweetComment;
+  deletePermission: boolean | null;
+  isEmptyStateDweet: boolean;
+  moderator: boolean;
+}> = ({ comment, deletePermission, moderator, isEmptyStateDweet }) => {
+  let originalText = comment.text;
+  let parts: { text: string; type: 'text' | 'code' }[] = [
+    { text: '', type: 'text' },
+  ];
+  let isInsideBacktickPair = false;
+  let j = 0;
+  const [deleted, setDeleted] = useState(false);
+
+  if (deleted) {
+    return null;
+  }
+
+  while (j < originalText.length) {
+    const letter = originalText[j];
+    if (letter === '\\' && isInsideBacktickPair) {
+      if (originalText[j + 1] === '`') {
+        parts[parts.length - 1].text += '`';
+        j += 2;
+        continue;
+      }
+    }
+    if (letter === '`') {
+      if (!isInsideBacktickPair) {
+        isInsideBacktickPair = true;
+        j++;
+        parts.push({ text: '', type: 'code' });
+        continue;
+      } else {
+        isInsideBacktickPair = false;
+        j++;
+        parts.push({ text: '', type: 'text' });
+        continue;
+      }
+    }
+
+    parts[parts.length - 1].text += letter;
+    j++;
+  }
+  return (
+    <div key={comment.id} style={{ marginTop: 16 }} className="hover-parent">
+      <div
+        className="hover-parent"
+        style={{
+          float: 'right',
+          padding: '2px 8px',
+          fontSize: 10,
+          borderRadius: 4,
+          background: '#f5f5f5',
+          alignItems: 'center',
+          justifyContent: 'center',
+        }}
+      >
+        <div className="show-on-parent-hover">
+          {deletePermission ? (
+            <DeleteButton
+              commentId={comment.id}
+              onDeleted={() => {
+                setDeleted(true);
+              }}
+              isEmptyStateDweet={isEmptyStateDweet}
+            />
+          ) : (
+            <>
+              <ReportButton
+                commentId={comment.id}
+                isEmptyStateDweet={isEmptyStateDweet}
+              />
+              {moderator && ( // Mods get both buttons! :)
+                <div style={{ marginLeft: 16 }}>
+                  <DeleteButton
+                    commentId={comment.id}
+                    onDeleted={() => {
+                      setDeleted(true);
+                    }}
+                    isEmptyStateDweet={isEmptyStateDweet}
+                  />
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
+      <UserView user={comment.author} />
+      <div style={{ marginLeft: 32 + 16 }}>
+        {parts.map((commentPart, partKey) =>
+          commentPart.type === 'code' ? (
+            <code
+              key={partKey}
+              style={{
+                display: 'inline-flex',
+                background: 'hsl(0, 0%, 92.5%)',
+                borderRadius: 4,
+                padding: '2px 4px',
+                fontSize: 12,
+                flexWrap: 'wrap',
+              }}
+            >
+              {hljs
+                .highlight('js', commentPart.text)
+                .emitter.rootNode.children.map((child: HLJSNode, i: number) =>
+                  renderHLJSNode(child, i)
+                )}
+            </code>
+          ) : (
+            <Linkify
+              key={partKey}
+              componentDecorator={(href, text, key) => (
+                <Link target="_blank" key={key} to={href}>
+                  {text}
+                </Link>
+              )}
+            >
+              {commentPart.text}
+            </Linkify>
+          )
+        )}
+      </div>
+    </div>
+  );
+};
+
+const RemixOf: React.FC<{ dweet: Dweet }> = ({ dweet }) => {
+  if (!dweet.remix_of) {
+    return <></>;
+  }
+  if (!dweet.remix_of.deleted) {
+    return (
+      <>
+        <span>Remix of </span>
+        <Link to={'/d/' + dweet.remix_of.id} className="no-link-color mx-2">
+          <span
+            style={{
+              opacity: '0.5',
+            }}
+          >
+            d/
+          </span>
+          {dweet.remix_of.id}
+        </Link>
+        <span className="mr-2"> by </span>
+        <UserViewRight user={dweet.remix_of.author} />
+      </>
+    );
+  } else {
+    return (
+      <>
+        <span>Remix of </span>
+        <Link to={'/d/' + dweet.remix_of.id} className="no-link-color mx-2">
+          <span
+            style={{
+              opacity: '0.5',
+            }}
+          >
+            [ deleted ]
+          </span>
+        </Link>
+      </>
+    );
+  }
 };
 
 const DweetList: React.FC<{ dweet_ids: number[] }> = ({ dweet_ids }) => {
