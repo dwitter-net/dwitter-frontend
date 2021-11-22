@@ -107,6 +107,9 @@ export const LoginForm = (props: Props) => {
         <Link className="mb-3 mt-3 mr-3" to="/accounts/register">
           Register
         </Link>
+        <a className="mb-3 mt-3 mr-3" href='https://www.dwitter.net/accounts/password/reset/'>
+          Forgot password
+        </a>
         <button
           className="btn btn-primary mb-3 mt-3 shadow-primary"
           disabled={isLoading}
