@@ -34,12 +34,19 @@ export interface Dweet {
   remixes: number[];
 }
 
+
+export interface Stats {
+  dweet_count: number;
+  awesome_count: number;
+}
+
 export interface ApiList<T> {
   next: string | null;
   previous: string | null;
   count: number;
   results: T[];
 }
+
 
 async function get(path: string) {
   const token = localStorage.getItem('token');
@@ -150,6 +157,10 @@ export async function getLoggedInUser(): Promise<LoggedInUser> {
 
 export async function getUser(id: string): Promise<User> {
   return get('users/' + id + '/');
+}
+
+export async function getStats(id: string): Promise<Stats> {
+  return get(`stats/?username=${id}`);
 }
 
 export async function addComment(
