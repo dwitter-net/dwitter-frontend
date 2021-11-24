@@ -160,7 +160,7 @@ export async function getUser(id: string): Promise<User> {
 }
 
 export async function getStats(id: string): Promise<Stats> {
-  return get(`stats/?username=${id}`);
+  return get(`users/${id}/stats/`);
 }
 
 export async function addComment(
