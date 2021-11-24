@@ -3,7 +3,6 @@ import { topBarMaxWidth, Context } from './Context';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 import { Link, useLocation, NavLink } from 'react-router-dom';
 import { UserView } from './UserView';
-import {Dweet, getDweet, Stats, getStats} from "./api";
 
 export const Header: React.FC<{}> = (props) => {
   const [isUserMenuDropdownOpen, setIsUserMenuDropdownOpen] = useState(false);
@@ -11,7 +10,6 @@ export const Header: React.FC<{}> = (props) => {
   const [subItemMenuOpenMap, setSubItemMenuOpenMap] = useState<{
     [key: string]: boolean | undefined;
   }>({});
-  const [stats, setStats] = useState<Stats>({awesome_count: 0, dweet_count: 0});
 
   const [context] = useContext(Context);
 
@@ -61,15 +59,6 @@ export const Header: React.FC<{}> = (props) => {
   ];
 
   const location = useLocation();
-
-  useEffect(
-    () => {
-      if(context && context.user) {
-        getStats(context.user.username).then(setStats)
-      }
-    },
-    [context.user]
-  );
 
   // If a subitem is selected, this will point to the parent
   // i.e. for /top/year this will contain the whole top object
@@ -131,17 +120,7 @@ export const Header: React.FC<{}> = (props) => {
                 />
               ))}
             </div>
-
-            {
-              context.user
-                ?
-                  <span title={`Total dweets: ${stats.dweet_count}`}>
-                  Dwitter.net {`| ${context.user.username}(${stats.awesome_count})`}
-                  </span>
-                :
-                  <span>Dwitter.net</span>
-            }
-
+            Dwitter.net
           </a>
         </div>
         <div className="d-flex d-sm-none">

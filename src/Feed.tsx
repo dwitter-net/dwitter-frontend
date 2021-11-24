@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useContext } from "react";
 import { DweetCard } from "./DweetCard";
-import { Dweet, getDweets } from "./api";
+import { Dweet, getDweets, Stats, getStats} from "./api";
 import { Link, RouteComponentProps, NavLink } from "react-router-dom";
 import { Context } from "./Context";
 import { Helmet } from "react-helmet";
@@ -18,6 +18,7 @@ export const Feed: React.FC<
   const [dweets, setDweets] = useState<Dweet[][]>([]);
   const pageState = useRef({ current: 0, target: 0 });
   const [page, setPage] = useState(0);
+  const [stats, setStats] = useState<Stats>({awesome_count: 0, dweet_count: 0});
 
   const hashtag = props.match.params.hashtag || "";
   const username = props.match.params.username || "";
@@ -65,6 +66,15 @@ export const Feed: React.FC<
     props.history.length,
   ]);
 
+  useEffect(
+    () => {
+      if(username) {
+        getStats(username).then(setStats)
+      }
+    },
+    [username]
+  );
+
   const pathRoot = hashtag ? "/h/" + hashtag : "/u/" + username;
 
   return (
@@ -100,7 +110,12 @@ export const Feed: React.FC<
                 }}
               >
                 {hashtag && "#" + hashtag}
-                {username && "u/" + username}
+                {
+                  username &&
+                  <span title={`Total dweets: ${stats.dweet_count}`}>
+                  {`u/${username}(${stats.awesome_count})`}
+                  </span>
+                }
               </div>
               <div style={{ marginLeft: 16, display: "flex" }}>
                 <NavLink
