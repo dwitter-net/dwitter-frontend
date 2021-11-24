@@ -62,15 +62,14 @@ export const Header: React.FC<{}> = (props) => {
 
   const location = useLocation();
 
-  useEffect(() => {
-      console.log('stats')
-
+  useEffect(
+    () => {
       if(context && context.user) {
         getStats(context.user.username).then(setStats)
       }
     },
     [context.user]
-  )
+  );
 
   // If a subitem is selected, this will point to the parent
   // i.e. for /top/year this will contain the whole top object
