@@ -144,6 +144,8 @@ export const DweetCard: React.FC<Props> = (props) => {
     dweet.comments.length > 0 &&
     dweet.comments[0].author.id === dweet.author.id;
 
+  const isNSFW = dweet.comments.some(x=>x.text.toUpperCase().indexOf('#NSFW') >= 0);
+
   const shouldCollapseComments =
     dweet.comments.length > 6 && !shouldExpandComments;
   const comments = shouldCollapseComments
@@ -204,11 +206,8 @@ export const DweetCard: React.FC<Props> = (props) => {
               ref={setIframe}
               title={'dweet_' + dweet.id}
               src={
-                process.env.REACT_APP_API_EMBED_BASE_URL +
-                'id/' +
-                dweet.id +
-                '?autoplay=true&code=' +
-                encodedCode
+                `${process.env.REACT_APP_API_EMBED_BASE_URL}id/${dweet.id}` +
+                `?${isNSFW ? 'spoiler' : 'autoplay'}=true&code=${encodedCode}`
               }
               sandbox="allow-same-origin allow-scripts"
               style={{
