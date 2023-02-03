@@ -287,7 +287,7 @@ export const DweetCard: React.FC<Props> = (props) => {
         )}
         <a
           // We make this a link, so users can ctrl-click to open in a new tab
-          href={'https://dwitter.net/d/' + dweet.id}
+          href={'/d/' + dweet.id}
           style={{
             marginLeft: 16,
             ...(isEmptyStateDweet
