@@ -432,6 +432,10 @@ export const DweetCard: React.FC<Props> = (props) => {
             className="no-link-styling"
             href={'https://dwitter.net/d/' + dweet.id}
           >
+            <span className="mr-3">
+              {'/d/'+dweet.id}
+            </span>
+
             {new Date(dweet.posted).toLocaleString()}
           </a>
         </div>
