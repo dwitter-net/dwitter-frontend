@@ -27,7 +27,6 @@ import {
   isCodeCompressed,
 } from './utils';
 import { AwesomeButton } from './AwesomeButton';
-import { request } from 'https';
 
 hljs.registerLanguage('js', javascriptHLJS);
 
@@ -147,7 +146,9 @@ export const DweetCard: React.FC<Props> = (props) => {
     dweet.comments.length > 0 &&
     dweet.comments[0].author.id === dweet.author.id;
 
-  const isNSFW = dweet.comments.some(x=>x.text.toUpperCase().indexOf('#NSFW') >= 0);
+  const isNSFW = dweet.comments.some(
+    (x) => x.text.toUpperCase().indexOf('#NSFW') >= 0
+  );
 
   const shouldCollapseComments =
     dweet.comments.length > 6 && !shouldExpandComments;
@@ -181,7 +182,7 @@ export const DweetCard: React.FC<Props> = (props) => {
       setError('Encoding error');
       return '';
     }
-  }, [code, setError, error]);
+  }, [code, setError]);
 
   if (dweet.deleted) {
     return (
@@ -254,7 +255,7 @@ export const DweetCard: React.FC<Props> = (props) => {
             <AwesomeButton dweet={dweet} onUpdate={setUpdatedDweet} />
           </div>
         </div>
-        {context.user && dweet.author.id == context?.user.id ? (
+        {context.user && dweet.author.id === context?.user.id ? (
           // Swap report button with delete for your own dweet
           <DeleteButton
             dweetId={dweet.id}
@@ -305,16 +306,18 @@ export const DweetCard: React.FC<Props> = (props) => {
           share
         </a>
         {dweet.remixes.length > 0 && (
-          <a
-            href="#"
+          <button
+            type="button"
+            className="btn btn-link"
             style={{
               marginLeft: 16,
+              padding: 0,
+              border: 'none',
               ...(isEmptyStateDweet
                 ? { background: 'var(--blue)', borderRadius: 4, opacity: 0.33 }
                 : {}),
             }}
-            onClick={(e) => {
-              e.preventDefault();
+            onClick={() => {
               if (isEmptyStateDweet) {
                 return;
               }
@@ -322,18 +325,20 @@ export const DweetCard: React.FC<Props> = (props) => {
             }}
           >
             {dweet.remixes.length} remix{dweet.remixes.length > 1 && 'es'}
-          </a>
+          </button>
         )}
-        <a
-          href="#"
+        <button
+          type="button"
+          className="btn btn-link"
           style={{
             marginLeft: 16,
+            padding: 0,
+            border: 'none',
             ...(isEmptyStateDweet
               ? { background: 'var(--blue)', borderRadius: 4, opacity: 0.33 }
               : {}),
           }}
-          onClick={(e) => {
-            e.preventDefault();
+          onClick={() => {
             if (isEmptyStateDweet) {
               return;
             }
@@ -341,7 +346,7 @@ export const DweetCard: React.FC<Props> = (props) => {
           }}
         >
           fullscreen
-        </a>
+        </button>
       </div>
       <div className="d-flex align-items-center mb-3">
         <UserView user={dweet.author} />
@@ -432,9 +437,7 @@ export const DweetCard: React.FC<Props> = (props) => {
             className="no-link-styling"
             href={'https://dwitter.net/d/' + dweet.id}
           >
-            <span className="mr-3">
-              {'/d/'+dweet.id}
-            </span>
+            <span className="mr-3">{'/d/' + dweet.id}</span>
 
             {new Date(dweet.posted).toLocaleString()}
           </a>
@@ -530,7 +533,12 @@ export const DweetCard: React.FC<Props> = (props) => {
         >
           <Linkify
             componentDecorator={(decoratedHref, decoratedText, key) => (
-              <a target="_blank" href={decoratedHref} key={key}>
+              <a
+                target="_blank"
+                href={decoratedHref}
+                rel="noopener noreferrer"
+                key={key}
+              >
                 {decoratedText}
               </a>
             )}
@@ -541,15 +549,14 @@ export const DweetCard: React.FC<Props> = (props) => {
       )}
       {shouldCollapseComments && (
         <div style={{ padding: 16, textAlign: 'center' }}>
-          <a
-            href="#"
-            onClick={(e) => {
-              e.preventDefault();
-              setShouldExpandComments(true);
-            }}
+          <button
+            type="button"
+            className="btn btn-link"
+            style={{ margin: 0, padding: 0, border: 'none' }}
+            onClick={() => setShouldExpandComments(true)}
           >
             Show more comments...
-          </a>
+          </button>
         </div>
       )}
       {comments.slice(shouldStickyFirstComment ? 1 : 0).map((comment) => {
@@ -557,7 +564,7 @@ export const DweetCard: React.FC<Props> = (props) => {
           <DweetCommentView
             comment={comment}
             deletePermission={
-              context.user && comment.author.id == context?.user.id
+              context.user && comment.author.id === context?.user.id
             }
             moderator={context?.user ? context?.user.is_staff : false}
             isEmptyStateDweet={isEmptyStateDweet}
@@ -632,21 +639,22 @@ export const DweetCard: React.FC<Props> = (props) => {
               position: 'relative',
             }}
           >
-            <a
-              href="#"
+            <button
+              type="button"
+              className="btn btn-link"
               style={{
                 position: 'absolute',
                 right: 0,
                 top: 0,
                 fontWeight: 'normal',
+                margin: 0,
+                padding: 0,
+                border: 'none',
               }}
-              onClick={(e) => {
-                e.preventDefault();
-                setShowRemixListModal(false);
-              }}
+              onClick={() => setShowRemixListModal(false)}
             >
               close
-            </a>
+            </button>
             Remixes of d/{dweet.id}
           </div>
 
@@ -668,21 +676,22 @@ export const DweetCard: React.FC<Props> = (props) => {
               position: 'relative',
             }}
           >
-            <a
-              href="#"
+            <button
+              type="button"
+              className="btn btn-link"
               style={{
                 position: 'absolute',
                 right: 0,
                 top: 0,
                 fontWeight: 'normal',
+                margin: 0,
+                padding: 0,
+                border: 'none',
               }}
-              onClick={(e) => {
-                e.preventDefault();
-                setShowShareModal(false);
-              }}
+              onClick={() => setShowShareModal(false)}
             >
               close
-            </a>
+            </button>
             Share d/{dweet.id}
           </div>
           <label>Permalink</label>

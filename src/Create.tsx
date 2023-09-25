@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useState } from 'react';
 import AceEditor from 'react-ace';
 import { RouteComponentProps, NavLink } from 'react-router-dom';
 import { postDweet } from './api';
@@ -32,6 +32,7 @@ export const Create: React.FC<RouteComponentProps> = (props) => {
                 }}
               >
                 <iframe
+                  title="player"
                   style={{ border: 0, width: '100%', height: '100%' }}
                   src={
                     process.env.REACT_APP_API_EMBED_BASE_URL +

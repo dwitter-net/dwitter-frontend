@@ -3,7 +3,6 @@ import { Redirect, RouteComponentProps } from 'react-router-dom';
 import { Helmet } from 'react-helmet';
 import { pageMaxWidth } from './Context';
 import { RegisterForm } from './RegisterForm';
-import { getLoggedInUser } from './api';
 
 export const Register: React.FC<RouteComponentProps> = (props) => {
   if (localStorage.getItem('user')) {
