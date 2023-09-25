@@ -1,5 +1,3 @@
-import { create } from 'domain';
-
 export interface User {
   id: number;
   username: string;
@@ -37,7 +35,6 @@ export interface Dweet {
   remixes: number[];
 }
 
-
 export interface Stats {
   dweet_count: number;
   awesome_count: number;
@@ -49,7 +46,6 @@ export interface ApiList<T> {
   count: number;
   results: T[];
 }
-
 
 async function get(path: string) {
   const token = localStorage.getItem('token');

@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { Context } from './Context';
-import { deleteComment, deleteDweet, Dweet } from './api';
+import { deleteComment, deleteDweet } from './api';
 
 export const DeleteButton: React.FC<{
   dweetId?: number;
@@ -9,7 +9,7 @@ export const DeleteButton: React.FC<{
   isEmptyStateDweet: boolean;
 }> = (props) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [context, _] = useContext(Context);
+  const [context] = useContext(Context);
 
   const object = props.dweetId ? 'dweet' : 'comment';
   return (

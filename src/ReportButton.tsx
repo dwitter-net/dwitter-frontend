@@ -9,7 +9,7 @@ export const ReportButton: React.FC<{
 }> = (props) => {
   const [hasReported, setHasReported] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
-  const [context, _] = useContext(Context);
+  const [context] = useContext(Context);
 
   const object = props.dweetId ? 'dweet' : 'comment';
   return (

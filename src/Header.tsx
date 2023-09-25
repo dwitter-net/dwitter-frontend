@@ -1,4 +1,4 @@
-import React, {useState, useContext, useEffect} from 'react';
+import React, { useState, useContext } from 'react';
 import { topBarMaxWidth, Context } from './Context';
 import { Dropdown, DropdownToggle, DropdownMenu } from 'reactstrap';
 import { Link, useLocation, NavLink } from 'react-router-dom';
