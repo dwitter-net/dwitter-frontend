@@ -2,13 +2,16 @@
   "name": "dwitter-frontend",
   "version": "0.1.0",
   "private": true,
+  "engines": {
+    "node": ">=16"
+  },
   "dependencies": {
     "@testing-library/jest-dom": "^4.2.4",
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@types/highlight.js": "^9.12.4",
     "@types/jest": "^24.0.0",
-    "@types/node": "^12.0.0",
+    "@types/node": "16",
     "@types/react": "^16.9.0",
     "@types/react-dom": "^16.9.0",
     "@types/react-helmet": "^6.0.0",
@@ -18,7 +21,6 @@
     "ace-builds": "^1.4.11",
     "bootstrap": "^4.4.1",
     "highlight.js": "^10.4.1",
-    "node-sass": "^4.14.1",
     "react": "^16.13.1",
     "react-ace": "^8.1.0",
     "react-dom": "^16.13.1",
@@ -28,6 +30,7 @@
     "react-scripts": "3.4.1",
     "react-switch": "^6.0.0",
     "reactstrap": "^8.4.1",
+    "sass": "^1.68.0",
     "typescript": "~3.7.2"
   },
   "scripts": {
